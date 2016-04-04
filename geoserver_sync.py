@@ -1,16 +1,22 @@
 #!/usr/bin/env python
 
+from os import getenv
+
+from geoserver_reload import reload_config
 from marathon import MarathonClient, MarathonError
 
-# Need to identify the hosts and ports of executing tasks
-try:
-    c = MarathonClient('http://54.208.19.235/service/marathon')
+MARATHON_URL = getenv('MARATHON_URL', 'http://dcos/service/marathon')
+MARATHON_APP = getenv('MARATHON_APP', 'geoserver-slave')
 
-    app = c.get_app('geoserver-master')
+
+# Identify the hosts and ports of executing tasks
+try:
+    c = MarathonClient(MARATHON_URL)
+
+    app = c.get_app(MARATHON_APP)
 
     container_port = 80
 
-    print app
     port_index = None
     if app and app.container and app.container.docker and app.container.docker.port_mappings:
         for i in range(len(app.container.docker.port_mappings)):
@@ -22,10 +28,14 @@ try:
 
     if port_index is None:
         raise Exception('Unable to correlate container to host port.')
+
+    instances = []
     for task in app.tasks:
-        print 'Beginning configuration refresh of %s at %s:%s' % \
+        print 'Queuing configuration refresh of %s at %s:%s' % \
               (task.id, task.host, task.ports[port_index])
-        print task
+        instances.append('%s:%s' % (task.host, task.ports[port_index]))
+        reload_config(instances)
+
+
 except MarathonError, ex:
     print 'Error making Marathon API call: %s' % ex.message
-
