@@ -33,11 +33,11 @@ def reload_config(instances):
         catalog = Catalog(url, username=USERNAME, password=PASSWORD)
         result = catalog.reload()
         if result and result[0]:
-            if result[0].status >= 200 and result[0].status < 300:
+            if 200 <= result[0].status < 300:
                 logging.info('Successful configuration reload.')
             else:
-                logging.error('Failure processing reload with status %s and reason: %s' %
-                              (result[0].status, result[0].reason))
+                raise Exception('Failure processing reload with status %s and reason: %s' %
+                                (result[0].status, result[0].reason))
         else:
             logging.error('No result received from reload request!')
 

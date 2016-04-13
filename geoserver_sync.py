@@ -49,6 +49,5 @@ def sync_marathon_app():
 
         reload_config(instances)
 
-
     except MarathonError, ex:
         print 'Error making Marathon API call: %s' % ex.message
