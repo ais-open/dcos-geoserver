@@ -29,7 +29,7 @@ signal.signal(signal.SIGTERM, sig_handler)
 
 # Initialize OS agnostic PollingObserver and handle schedule withGeoServerFileSystemEventHandler.
 # This plays nicely with the lack of inotify support over NFS.
-event_handler = GeoServerFileSystemEventHandler()
+event_handler = GeoServerFileSystemEventHandler(POLLING_INTERVAL, FILE_BLACKLIST)
 observer = PollingObserver(POLLING_INTERVAL)
 observer.schedule(event_handler, GEOSERVER_DATA_DIR, recursive=True)
 observer.start()
