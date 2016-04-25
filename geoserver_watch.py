@@ -16,7 +16,7 @@ POLLING_INTERVAL = int(getenv('POLLING_INTERVAL', '5'))
 FILE_BLACKLIST = getenv('FILE_BLACKLIST', '.log')
 
 
-def _onsig(signum, _frame):
+def sig_handler(signum, frame):
     """See signal callback registration: :py:func:`signal.signal`.
     This callback performs a clean shutdown when a SIGINT/SIGTERM is received.
     """
@@ -24,8 +24,8 @@ def _onsig(signum, _frame):
     observer.stop()
 
 # Wire in signal handlers for SIGINT/SIGTERM
-signal.signal(signal.SIGINT, _onsig)
-signal.signal(signal.SIGTERM, _onsig)
+signal.signal(signal.SIGINT, sig_handler)
+signal.signal(signal.SIGTERM, sig_handler)
 
 # Initialize OS agnostic PollingObserver and handle schedule withGeoServerFileSystemEventHandler.
 # This plays nicely with the lack of inotify support over NFS.
