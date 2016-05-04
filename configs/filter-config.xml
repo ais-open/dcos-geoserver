@@ -1,0 +1,3 @@
+<filters name="anonReload" class="org.geoserver.security.ServiceLoginFilterChain" interceptorName="interceptor"
+         exceptionTranslationName="exception" path="/rest/reload" disabled="true" allowSessionCreation="false"
+         ssl="false" matchHTTPMethod="false"/>
