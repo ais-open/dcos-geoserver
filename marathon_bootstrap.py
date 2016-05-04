@@ -4,7 +4,7 @@ import requests, sys, json, time
 from os import getenv
 
 
-MARATHON_HOSTNAME_ADDR = getenv('MARATHON_HOSTNAME_ADDR', 'marathon.mesos:8080')
+MARATHON_ROOT_URL = getenv('MARATHON_ROOT_URL', 'marathon.mesos:8080')
 MARATHON_APP = getenv('MARATHON_APP', 'geoserver-slave')
 MARATHON_APP_PORT = int(getenv('MARATHON_APP_PORT', '8080'))
 
@@ -16,7 +16,7 @@ GEOSERVER_IMAGE = 'gisjedi/geoserver:2.8'
 GS_SLAVE_INSTANCES = getenv('GS_SLAVE_INSTANCES', 5)
 HOST_GEOSERVER_DATA_DIR = getenv('HOST_GEOSERVER_DATA_DIR', '/shared/geoserver')
 
-APPS_ENDPOINT = 'http://%s/v2/apps' % MARATHON_HOSTNAME_ADDR
+APPS_ENDPOINT = 'http://%s/v2/apps' % MARATHON_ROOT_URL
 
 with open('configs/%s.json' % GEOSERVER_MASTER_APP) as marathon_config:
     marathon_json = json.load(marathon_config)
