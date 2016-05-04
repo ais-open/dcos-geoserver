@@ -1,4 +1,5 @@
 {
+	"id": "geoserver-master",
 	"cpus": 1,
 	"mem": 2048,
 	"instances": 1,
