@@ -1,8 +1,16 @@
 #!/usr/bin/env python
 
-import requests, sys, json, time
+import json
+import logging
+import requests
+import sys
+import time
+
 from os import getenv
 
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(message)s',
+                    datefmt='%Y-%m-%d %H:%M:%S')
 
 MARATHON_ROOT_URL = getenv('MARATHON_ROOT_URL', 'marathon.mesos:8080')
 MARATHON_APP = getenv('MARATHON_APP', 'geoserver-slave')
@@ -27,16 +35,16 @@ with open('configs/%s.json' % GEOSERVER_MASTER_APP) as marathon_config:
 
 response = requests.post(APPS_ENDPOINT, data=json.dumps(marathon_json))
 if response.status_code == 409:
-    print 'Master application already created, moving on.'
+    logging.info('Master application already created, moving on.')
 elif response.status_code == 201:
-    print 'Successfully created GeoServer Master app in Marathon.'
+    logging.info('Successfully created GeoServer Master app in Marathon.')
 else:
-    print 'Unable to create new Marathon App for GeoServer master.'
+    logging.critical('Unable to create new Marathon App for GeoServer master.')
     sys.exit(1)
 
 # Block until master is healthy
 while json.loads(requests.get('%s/%s' % (APPS_ENDPOINT, GEOSERVER_MASTER_APP)).text)['app']['tasksHealthy'] == 0:
-    print "Waiting for healthy master."
+    logging.info("Waiting for healthy master.")
     time.sleep(5)
 
 # Inject the filter chain
@@ -45,7 +53,7 @@ with open('configs/filter-config.xml') as filter_read:
     with open('%s/security/config.xml' % GEOSERVER_DATA_DIR) as config_read:
         full_config = config_read.read()
         if 'anonReload' in full_config:
-            print 'Configuration already supports anonymous REST reloads.'
+            logging.info('Configuration already supports anonymous REST reloads.')
         else:
             config_read.seek(0)
             with open('%s/security/config.xml-output' % GEOSERVER_DATA_DIR, 'w') as config_write:
@@ -60,7 +68,7 @@ response = requests.post('%s/%s/restart' % (APPS_ENDPOINT, GEOSERVER_MASTER_APP)
                          data=json.dumps(marathon_json))
 
 if not response.status_code == 200:
-    print 'Error restarting GeoServer master'
+    logging.critical('Error restarting GeoServer master')
     sys.exit(1)
 
 with open('configs/%s.json' % GEOSERVER_SLAVE_APP) as marathon_config:
@@ -73,17 +81,17 @@ with open('configs/%s.json' % GEOSERVER_SLAVE_APP) as marathon_config:
 
 response = requests.post(APPS_ENDPOINT, data=json.dumps(marathon_json))
 if response.status_code == 409:
-    print 'Slave application already created, moving on.'
+    logging.info('Slave application already created, moving on.')
 elif response.status_code == 201:
-    print 'Successfully created GeoServer Slave app in Marathon.'
+    logging.info('Successfully created GeoServer Slave app in Marathon.')
 else:
-    print 'Unable to create new Marathon App for GeoServer slaves.'
+    logging.critical('Unable to create new Marathon App for GeoServer slaves.')
     sys.exit(1)
 
 while json.loads(requests.get('%s/%s' % (APPS_ENDPOINT, GEOSERVER_MASTER_APP)).text)['app']['tasksHealthy'] == 0:
-    print "Waiting for healthy master."
+    logging.info("Waiting for healthy master.")
     time.sleep(5)
 
 while json.loads(requests.get('%s/%s' % (APPS_ENDPOINT, GEOSERVER_SLAVE_APP)).text)['app']['tasksHealthy'] == 0:
-    print "Waiting for healthy slaves."
+    logging.info("Waiting for healthy slaves.")
     time.sleep(5)
