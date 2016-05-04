@@ -23,13 +23,13 @@ with open('configs/%s.json' % GEOSERVER_MASTER_APP) as marathon_config:
     # Shim in the appropriate config values from environment
     marathon_json['env']['GOSU_USER'] = GOSU_USER
     marathon_json['container']['docker']['image'] = GEOSERVER_IMAGE
-    marathon_json['container']['volumes']['hostPath'] = HOST_GEOSERVER_DATA_DIR
+    marathon_json['container']['volumes'][0]['hostPath'] = HOST_GEOSERVER_DATA_DIR
 
 response = requests.post(APPS_ENDPOINT, data=json.dumps(marathon_json))
 if response.status_code == 409:
-    print 'Already created, moving on.'
+    print 'Master application already created, moving on.'
 elif response.status_code == 201:
-    print 'Successfully created.'
+    print 'Successfully created GeoServer Master app in Marathon.'
 else:
     print 'Unable to create new Marathon App for GeoServer master.'
     sys.exit(1)
@@ -69,13 +69,13 @@ with open('configs/%s.json' % GEOSERVER_SLAVE_APP) as marathon_config:
     marathon_json['env']['GOSU_USER'] = GOSU_USER
     marathon_json['instances'] = GS_SLAVE_INSTANCES
     marathon_json['container']['docker']['image'] = GEOSERVER_IMAGE
-    marathon_json['container']['volumes']['hostPath'] = HOST_GEOSERVER_DATA_DIR
+    marathon_json['container']['volumes'][0]['hostPath'] = HOST_GEOSERVER_DATA_DIR
 
 response = requests.post(APPS_ENDPOINT, data=json.dumps(marathon_json))
 if response.status_code == 409:
-    print 'Already created, moving on.'
+    print 'Slave application already created, moving on.'
 elif response.status_code == 201:
-    print 'Successfully created.'
+    print 'Successfully created GeoServer Slave app in Marathon.'
 else:
     print 'Unable to create new Marathon App for GeoServer slaves.'
     sys.exit(1)
