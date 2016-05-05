@@ -3,6 +3,7 @@
 import json
 import logging
 import requests
+import shutil
 import sys
 import time
 
@@ -65,6 +66,9 @@ with open('configs/filter-config.xml') as filter_read:
                     if '<filterChain' in line_value:
                         config_write.write('%s' % filter_inject)
                     line_value = config_read.readline()
+    shutil.move('%s/security/config.xml-output' % GEOSERVER_DATA_DIR,
+                '%s/security/config.xml' % GEOSERVER_DATA_DIR)
+
 
 response = requests.post('%s/%s/restart' % (APPS_ENDPOINT, GEOSERVER_MASTER_APP),
                          data=json.dumps(marathon_json))
