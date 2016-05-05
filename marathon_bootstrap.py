@@ -18,6 +18,7 @@ MARATHON_APP = getenv('MARATHON_APP', 'geoserver-slave')
 MARATHON_APP_PORT = int(getenv('MARATHON_APP_PORT', '8080'))
 
 FRAMEWORK_NAME = getenv('FRAMEWORK_NAME', 'geoserver')
+EXTERNAL_VHOST = getenv('EXTERNAL_VHOST', 'geoserver.marathon.mesos')
 GOSU_USER = getenv('GOSU_USER', 'root:root')
 GEOSERVER_DATA_DIR = getenv('GEOSERVER_DATA_DIR', '/srv/geoserver')
 GEOSERVER_MASTER_APP = FRAMEWORK_NAME + '-master'
@@ -28,6 +29,23 @@ HOST_GEOSERVER_DATA_DIR = getenv('HOST_GEOSERVER_DATA_DIR', '/shared/geoserver')
 
 APPS_ENDPOINT = '%s/v2/apps' % MARATHON_ROOT_URL
 
+
+def create_app_validate(apps_endpoint, marathon_json, app_type):
+    response = requests.post(apps_endpoint, data=json.dumps(marathon_json))
+    if response.status_code == 409:
+        logging.info('Application for %s already created, moving on.' % app_type)
+    elif response.status_code == 201:
+        logging.info('Successfully created GeoServer %s app in Marathon.' % app_type)
+    else:
+        logging.critical('Unable to create new Marathon App for GeoServer %s.' % app_type)
+        sys.exit(1)
+
+
+def block_for_healthy_app(apps_endpoint, app_name):
+    while json.loads(requests.get('%s/%s' % (apps_endpoint, app_name)).text)['app']['tasksHealthy'] == 0:
+        logging.info("Waiting for healthy app %s." % app_name)
+        time.sleep(5)
+
 with open('configs/geoserver-master.json') as marathon_config:
     marathon_json = json.load(marathon_config)
     # Shim in the appropriate config values from environment
@@ -35,22 +53,14 @@ with open('configs/geoserver-master.json') as marathon_config:
     marathon_json['env']['GOSU_USER'] = GOSU_USER
     marathon_json['container']['docker']['image'] = GEOSERVER_IMAGE
     marathon_json['container']['volumes'][0]['hostPath'] = HOST_GEOSERVER_DATA_DIR
+    marathon_json['labels']['HAPROXY_0_VHOST'] = EXTERNAL_VHOST
 
-response = requests.post(APPS_ENDPOINT, data=json.dumps(marathon_json))
-if response.status_code == 409:
-    logging.info('Master application already created, moving on.')
-elif response.status_code == 201:
-    logging.info('Successfully created GeoServer Master app in Marathon.')
-else:
-    logging.critical('Unable to create new Marathon App for GeoServer master.')
-    sys.exit(1)
+create_app_validate(APPS_ENDPOINT, marathon_json, 'master')
 
 # Block until master is healthy
-while json.loads(requests.get('%s/%s' % (APPS_ENDPOINT, GEOSERVER_MASTER_APP)).text)['app']['tasksHealthy'] == 0:
-    logging.info("Waiting for healthy master.")
-    time.sleep(5)
+block_for_healthy_app(APPS_ENDPOINT, GEOSERVER_MASTER_APP)
 
-# Inject the filter chain
+# Inject the filter chain to expose reload REST endpoint for anonymous use
 with open('configs/filter-config.xml') as filter_read:
     filter_inject = filter_read.read()
     with open('%s/security/config.xml' % GEOSERVER_DATA_DIR) as config_read:
@@ -86,20 +96,10 @@ with open('configs/geoserver-slave.json') as marathon_config:
     marathon_json['instances'] = GS_SLAVE_INSTANCES
     marathon_json['container']['docker']['image'] = GEOSERVER_IMAGE
     marathon_json['container']['volumes'][0]['hostPath'] = HOST_GEOSERVER_DATA_DIR
+    marathon_json['labels']['HAPROXY_0_VHOST'] = EXTERNAL_VHOST
 
-response = requests.post(APPS_ENDPOINT, data=json.dumps(marathon_json))
-if response.status_code == 409:
-    logging.info('Slave application already created, moving on.')
-elif response.status_code == 201:
-    logging.info('Successfully created GeoServer Slave app in Marathon.')
-else:
-    logging.critical('Unable to create new Marathon App for GeoServer slaves.')
-    sys.exit(1)
+create_app_validate(APPS_ENDPOINT, marathon_json, 'slave')
 
-while json.loads(requests.get('%s/%s' % (APPS_ENDPOINT, GEOSERVER_MASTER_APP)).text)['app']['tasksHealthy'] == 0:
-    logging.info("Waiting for healthy master.")
-    time.sleep(5)
+block_for_healthy_app(APPS_ENDPOINT, GEOSERVER_MASTER_APP)
+block_for_healthy_app(APPS_ENDPOINT, GEOSERVER_SLAVE_APP)
 
-while json.loads(requests.get('%s/%s' % (APPS_ENDPOINT, GEOSERVER_SLAVE_APP)).text)['app']['tasksHealthy'] == 0:
-    logging.info("Waiting for healthy slaves.")
-    time.sleep(5)
