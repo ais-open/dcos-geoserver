@@ -34,7 +34,7 @@
 	},
 	"healthChecks": [
 		{
-			"path": "/geoserver/rest",
+			"path": "/geoserver/ows?service=wfs&version=1.0.0&request=GetCapabilities",
 			"portIndex": 0,
 			"protocol": "HTTP",
 			"gracePeriodSeconds": 60,
@@ -50,6 +50,9 @@
 	},
 	"labels": {
 		"HAPROXY_GROUP": "internal,external",
-		"DCOS_PACKAGE_FRAMEWORK_NAME": "geoserver"
+		"DCOS_PACKAGE_FRAMEWORK_NAME": "geoserver",
+		"HAPROXY_0_PATH": "/geoserver",
+		"HAPROXY_0_BACKEND_WEIGHT": "0",
+		"HAPROXY_0_VHOST": "geoserver.marathon.mesos"
 	}
 }
