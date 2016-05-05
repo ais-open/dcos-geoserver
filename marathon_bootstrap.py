@@ -26,7 +26,7 @@ GEOSERVER_IMAGE = 'gisjedi/geoserver:2.8'
 GS_SLAVE_INSTANCES = getenv('GS_SLAVE_INSTANCES', 5)
 HOST_GEOSERVER_DATA_DIR = getenv('HOST_GEOSERVER_DATA_DIR', '/shared/geoserver')
 
-APPS_ENDPOINT = 'http://%s/v2/apps' % MARATHON_ROOT_URL
+APPS_ENDPOINT = '%s/v2/apps' % MARATHON_ROOT_URL
 
 with open('configs/geoserver-master.json') as marathon_config:
     marathon_json = json.load(marathon_config)
