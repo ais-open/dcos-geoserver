@@ -13,15 +13,15 @@ logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S')
 
-MARATHON_ROOT_URL = getenv('MARATHON_ROOT_URL', 'marathon.mesos:8080')
+MARATHON_ROOT_URL = getenv('MARATHON_ROOT_URL', 'http://marathon.mesos:8080')
 MARATHON_APP = getenv('MARATHON_APP', 'geoserver-slave')
 MARATHON_APP_PORT = int(getenv('MARATHON_APP_PORT', '8080'))
 
 FRAMEWORK_NAME = getenv('FRAMEWORK_NAME', 'geoserver')
 GOSU_USER = getenv('GOSU_USER', 'root:root')
 GEOSERVER_DATA_DIR = getenv('GEOSERVER_DATA_DIR', '/srv/geoserver')
-GEOSERVER_SLAVE_APP = FRAMEWORK_NAME + '-master'
-GEOSERVER_MASTER_APP = FRAMEWORK_NAME + '-slave'
+GEOSERVER_MASTER_APP = FRAMEWORK_NAME + '-master'
+GEOSERVER_SLAVE_APP = FRAMEWORK_NAME + '-slave'
 GEOSERVER_IMAGE = 'gisjedi/geoserver:2.8'
 GS_SLAVE_INSTANCES = getenv('GS_SLAVE_INSTANCES', 5)
 HOST_GEOSERVER_DATA_DIR = getenv('HOST_GEOSERVER_DATA_DIR', '/shared/geoserver')
@@ -66,8 +66,9 @@ with open('configs/filter-config.xml') as filter_read:
                     if '<filterChain' in line_value:
                         config_write.write('%s' % filter_inject)
                     line_value = config_read.readline()
-    shutil.move('%s/security/config.xml-output' % GEOSERVER_DATA_DIR,
-                '%s/security/config.xml' % GEOSERVER_DATA_DIR)
+
+            shutil.move('%s/security/config.xml-output' % GEOSERVER_DATA_DIR,
+                        '%s/security/config.xml' % GEOSERVER_DATA_DIR)
 
 
 response = requests.post('%s/%s/restart' % (APPS_ENDPOINT, GEOSERVER_MASTER_APP),
