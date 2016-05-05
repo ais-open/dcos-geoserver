@@ -103,3 +103,4 @@ create_app_validate(APPS_ENDPOINT, marathon_json, 'slave')
 block_for_healthy_app(APPS_ENDPOINT, GEOSERVER_MASTER_APP)
 block_for_healthy_app(APPS_ENDPOINT, GEOSERVER_SLAVE_APP)
 
+logging.info('Bootstrap complete.')
