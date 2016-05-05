@@ -25,9 +25,10 @@ RUN chmod +x /opt/gs-sync/*.py \
 #POLLING_INTERVAL: interval between polling the file system for updates
 #FILE_BLACKLIST: comma delimited list of files to ignore during file system polling (.log)
 
-# GeoServer slave package pass-through settings
-# GS_SLAVE_INSTANCES: defaults to 3
-# HOST_GEOSERVER_DATA_DIR: location the GeoServer data directory resides on the host (defaults to /shared/geoserver)
+# GeoServer package pass-through settings:
+#FRAMEWORK_NAME: (defaults to GeoServer)
+#GS_SLAVE_INSTANCES: defaults to 3
+#HOST_GEOSERVER_DATA_DIR: location the GeoServer data directory resides on the host (defaults to /shared/geoserver)
 EXPOSE 8000
 
 WORKDIR /opt/gs-sync

@@ -16,10 +16,11 @@ MARATHON_ROOT_URL = getenv('MARATHON_ROOT_URL', 'marathon.mesos:8080')
 MARATHON_APP = getenv('MARATHON_APP', 'geoserver-slave')
 MARATHON_APP_PORT = int(getenv('MARATHON_APP_PORT', '8080'))
 
+FRAMEWORK_NAME = getenv('FRAMEWORK_NAME', 'geoserver')
 GOSU_USER = getenv('GOSU_USER', 'root:root')
 GEOSERVER_DATA_DIR = getenv('GEOSERVER_DATA_DIR', '/srv/geoserver')
-GEOSERVER_SLAVE_APP = 'geoserver-master'
-GEOSERVER_MASTER_APP = 'geoserver-slave'
+GEOSERVER_SLAVE_APP = FRAMEWORK_NAME + '-master'
+GEOSERVER_MASTER_APP = FRAMEWORK_NAME + '-slave'
 GEOSERVER_IMAGE = 'gisjedi/geoserver:2.8'
 GS_SLAVE_INSTANCES = getenv('GS_SLAVE_INSTANCES', 5)
 HOST_GEOSERVER_DATA_DIR = getenv('HOST_GEOSERVER_DATA_DIR', '/shared/geoserver')
