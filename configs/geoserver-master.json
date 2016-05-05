@@ -8,7 +8,21 @@
 		"type": "DOCKER",
 		"docker": {
 			"image": "gisjedi/geoserver:2.8",
-			"network": "HOST"
+			"network": "BRIDGE",
+			"portMappings": [
+				{
+					"containerPort": 8080,
+					"hostPort": 0,
+					"servicePort": 0,
+					"protocol": "tcp"
+				},
+				{
+					"containerPort": 8009,
+					"hostPort": 0,
+					"servicePort": 0,
+					"protocol": "tcp"
+				}
+			]
 		},
 		"volumes": [
 			{
