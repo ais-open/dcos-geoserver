@@ -67,6 +67,7 @@ with open('configs/filter-config.xml') as filter_read:
         full_config = config_read.read()
         if 'anonReload' in full_config:
             logging.info('Configuration already supports anonymous REST reloads.')
+        # Only shim in anonymous reload and restart master if it hasn't been done before
         else:
             config_read.seek(0)
             with open('%s/security/config.xml-output' % GEOSERVER_DATA_DIR, 'w') as config_write:
@@ -80,13 +81,12 @@ with open('configs/filter-config.xml') as filter_read:
             shutil.move('%s/security/config.xml-output' % GEOSERVER_DATA_DIR,
                         '%s/security/config.xml' % GEOSERVER_DATA_DIR)
 
+            response = requests.post('%s/%s/restart' % (APPS_ENDPOINT, GEOSERVER_MASTER_APP),
+                                     data=json.dumps(marathon_json))
 
-response = requests.post('%s/%s/restart' % (APPS_ENDPOINT, GEOSERVER_MASTER_APP),
-                         data=json.dumps(marathon_json))
-
-if not response.status_code == 200:
-    logging.critical('Error restarting GeoServer master')
-    sys.exit(1)
+            if not response.status_code == 200:
+                logging.critical('Error restarting GeoServer master')
+                sys.exit(1)
 
 with open('configs/geoserver-slave.json') as marathon_config:
     marathon_json = json.load(marathon_config)
