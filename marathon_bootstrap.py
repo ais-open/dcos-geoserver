@@ -18,8 +18,9 @@ MARATHON_APP = getenv('MARATHON_APP', 'geoserver-slave')
 MARATHON_APP_PORT = int(getenv('MARATHON_APP_PORT', '8080'))
 
 FRAMEWORK_NAME = getenv('FRAMEWORK_NAME', 'geoserver')
-EXTERNAL_VHOST = getenv('EXTERNAL_VHOST', 'geoserver.marathon.mesos')
-HAPROXY_PORT = getenv('HAPROXY_PORT', "8080")
+HAPROXY_VHOST = getenv('HAPROXY_VHOST', 'geoserver.marathon.mesos')
+HAPROXY_PORT = getenv('HAPROXY_PORT', '8080')
+HAPROXY_MASTER_PATH = getenv('HAPROXY_MASTER_PATH', '/geoserver/web geoserver/j_spring_security_check')
 GOSU_USER = getenv('GOSU_USER', 'root:root')
 GEOSERVER_DATA_DIR = getenv('GEOSERVER_DATA_DIR', '/srv/geoserver')
 GEOSERVER_MASTER_APP = FRAMEWORK_NAME + '-master'
@@ -55,8 +56,9 @@ with open('configs/geoserver-master.json') as marathon_config:
     marathon_json['env']['GOSU_USER'] = GOSU_USER
     marathon_json['container']['docker']['image'] = GEOSERVER_IMAGE
     marathon_json['container']['volumes'][0]['hostPath'] = HOST_GEOSERVER_DATA_DIR
-    marathon_json['labels']['HAPROXY_0_VHOST'] = EXTERNAL_VHOST
+    marathon_json['labels']['HAPROXY_0_VHOST'] = HAPROXY_VHOST
     marathon_json['labels']['HAPROXY_0_PORT'] = HAPROXY_PORT
+    marathon_json['labels']['HAPROXY_0_PATH'] = HAPROXY_MASTER_PATH
 
 create_app_validate(APPS_ENDPOINT, marathon_json, 'master')
 
@@ -99,7 +101,7 @@ with open('configs/geoserver-slave.json') as marathon_config:
     marathon_json['instances'] = GS_SLAVE_INSTANCES
     marathon_json['container']['docker']['image'] = GEOSERVER_IMAGE
     marathon_json['container']['volumes'][0]['hostPath'] = HOST_GEOSERVER_DATA_DIR
-    marathon_json['labels']['HAPROXY_0_VHOST'] = EXTERNAL_VHOST
+    marathon_json['labels']['HAPROXY_0_VHOST'] = HAPROXY_VHOST
     marathon_json['labels']['HAPROXY_0_PORT'] = HAPROXY_PORT
 
 create_app_validate(APPS_ENDPOINT, marathon_json, 'slave')
