@@ -50,7 +50,6 @@
 	},
 	"labels": {
 		"HAPROXY_GROUP": "internal,external",
-		"DCOS_PACKAGE_FRAMEWORK_NAME": "geoserver",
 		"HAPROXY_0_PATH": "/geoserver",
 		"HAPROXY_0_BACKEND_WEIGHT": "0",
 		"HAPROXY_0_VHOST": "geoserver.marathon.mesos"
