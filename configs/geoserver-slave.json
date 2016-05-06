@@ -52,7 +52,7 @@
 		"HAPROXY_GROUP": "internal,external",
 		"HAPROXY_0_PATH": "/geoserver",
 		"HAPROXY_0_PORT": "8080",
-		"HAPROXY_0_BACKEND_WEIGHT": "0",
+		"HAPROXY_0_BACKEND_WEIGHT": "5",
 		"HAPROXY_0_VHOST": "geoserver.marathon.mesos"
 	}
 }
