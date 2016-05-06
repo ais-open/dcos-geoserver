@@ -14,8 +14,6 @@ logging.basicConfig(level=logging.INFO,
                     datefmt='%Y-%m-%d %H:%M:%S')
 
 MARATHON_ROOT_URL = getenv('MARATHON_ROOT_URL', 'http://marathon.mesos:8080')
-MARATHON_APP = getenv('MARATHON_APP', 'geoserver-slave')
-MARATHON_APP_PORT = int(getenv('MARATHON_APP_PORT', '8080'))
 
 FRAMEWORK_NAME = getenv('FRAMEWORK_NAME', 'geoserver')
 HAPROXY_VHOST = getenv('HAPROXY_VHOST', 'geoserver.marathon.mesos')
