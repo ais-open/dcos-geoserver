@@ -19,7 +19,7 @@ MARATHON_APP_PORT = int(getenv('MARATHON_APP_PORT', '8080'))
 
 FRAMEWORK_NAME = getenv('FRAMEWORK_NAME', 'geoserver')
 EXTERNAL_VHOST = getenv('EXTERNAL_VHOST', 'geoserver.marathon.mesos')
-SERVICE_PORT = int(getenv('SERVICE_PORT', 0))
+HAPROXY_PORT = getenv('HAPROXY_PORT', "8080")
 GOSU_USER = getenv('GOSU_USER', 'root:root')
 GEOSERVER_DATA_DIR = getenv('GEOSERVER_DATA_DIR', '/srv/geoserver')
 GEOSERVER_MASTER_APP = FRAMEWORK_NAME + '-master'
