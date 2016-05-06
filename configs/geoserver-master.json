@@ -50,6 +50,7 @@
 	"labels": {
 		"HAPROXY_GROUP": "internal,external",
 		"HAPROXY_0_PATH": "/geoserver/web",
+		"HAPROXY_0_PORT": 80,
 		"HAPROXY_0_BACKEND_WEIGHT": "1",
 		"HAPROXY_0_VHOST": "geoserver.marathon.mesos"
 	}

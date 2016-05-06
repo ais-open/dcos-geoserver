@@ -54,9 +54,9 @@ with open('configs/geoserver-master.json') as marathon_config:
     marathon_json['id'] = GEOSERVER_MASTER_APP
     marathon_json['env']['GOSU_USER'] = GOSU_USER
     marathon_json['container']['docker']['image'] = GEOSERVER_IMAGE
-    marathon_json['container']['docker']['portMappings'][0]['servicePort'] = SERVICE_PORT
     marathon_json['container']['volumes'][0]['hostPath'] = HOST_GEOSERVER_DATA_DIR
     marathon_json['labels']['HAPROXY_0_VHOST'] = EXTERNAL_VHOST
+    marathon_json['labels']['HAPROXY_0_PORT'] = SERVICE_PORT
 
 create_app_validate(APPS_ENDPOINT, marathon_json, 'master')
 
@@ -98,9 +98,9 @@ with open('configs/geoserver-slave.json') as marathon_config:
     marathon_json['env']['GOSU_USER'] = GOSU_USER
     marathon_json['instances'] = GS_SLAVE_INSTANCES
     marathon_json['container']['docker']['image'] = GEOSERVER_IMAGE
-    marathon_json['container']['docker']['portMappings'][0]['servicePort'] = SERVICE_PORT
     marathon_json['container']['volumes'][0]['hostPath'] = HOST_GEOSERVER_DATA_DIR
     marathon_json['labels']['HAPROXY_0_VHOST'] = EXTERNAL_VHOST
+    marathon_json['labels']['HAPROXY_0_PORT'] = SERVICE_PORT
 
 create_app_validate(APPS_ENDPOINT, marathon_json, 'slave')
 
