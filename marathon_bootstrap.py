@@ -19,12 +19,13 @@ MARATHON_APP_PORT = int(getenv('MARATHON_APP_PORT', '8080'))
 
 FRAMEWORK_NAME = getenv('FRAMEWORK_NAME', 'geoserver')
 EXTERNAL_VHOST = getenv('EXTERNAL_VHOST', 'geoserver.marathon.mesos')
+SERVICE_PORT = int(getenv('SERVICE_PORT', 0))
 GOSU_USER = getenv('GOSU_USER', 'root:root')
 GEOSERVER_DATA_DIR = getenv('GEOSERVER_DATA_DIR', '/srv/geoserver')
 GEOSERVER_MASTER_APP = FRAMEWORK_NAME + '-master'
 GEOSERVER_SLAVE_APP = FRAMEWORK_NAME + '-slave'
 GEOSERVER_IMAGE = 'gisjedi/geoserver:2.8'
-GS_SLAVE_INSTANCES = getenv('GS_SLAVE_INSTANCES', 5)
+GS_SLAVE_INSTANCES = int(getenv('GS_SLAVE_INSTANCES', 3))
 HOST_GEOSERVER_DATA_DIR = getenv('HOST_GEOSERVER_DATA_DIR', '/shared/geoserver')
 
 APPS_ENDPOINT = '%s/v2/apps' % MARATHON_ROOT_URL
@@ -52,6 +53,7 @@ with open('configs/geoserver-master.json') as marathon_config:
     marathon_json['id'] = GEOSERVER_MASTER_APP
     marathon_json['env']['GOSU_USER'] = GOSU_USER
     marathon_json['container']['docker']['image'] = GEOSERVER_IMAGE
+    marathon_json['container']['docker']['portMappings'][0]['servicePort'] = SERVICE_PORT
     marathon_json['container']['volumes'][0]['hostPath'] = HOST_GEOSERVER_DATA_DIR
     marathon_json['labels']['HAPROXY_0_VHOST'] = EXTERNAL_VHOST
 
@@ -95,6 +97,7 @@ with open('configs/geoserver-slave.json') as marathon_config:
     marathon_json['env']['GOSU_USER'] = GOSU_USER
     marathon_json['instances'] = GS_SLAVE_INSTANCES
     marathon_json['container']['docker']['image'] = GEOSERVER_IMAGE
+    marathon_json['container']['docker']['portMappings'][0]['servicePort'] = SERVICE_PORT
     marathon_json['container']['volumes'][0]['hostPath'] = HOST_GEOSERVER_DATA_DIR
     marathon_json['labels']['HAPROXY_0_VHOST'] = EXTERNAL_VHOST
 

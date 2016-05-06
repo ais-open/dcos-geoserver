@@ -28,6 +28,7 @@ RUN chmod +x /opt/gs-sync/*.py \
 # GeoServer package pass-through settings:
 #FRAMEWORK_NAME: (defaults to GeoServer)
 #EXTERNAL_VHOST: Public address for access to the GeoServer cluster (defaults to geoserver.marathon.mesos)
+#SERVICE_PORT: Port bound on marathon-lb for the services (defaults to 0)
 #GS_SLAVE_INSTANCES: defaults to 3
 #HOST_GEOSERVER_DATA_DIR: location the GeoServer data directory resides on the host (defaults to /shared/geoserver)
 EXPOSE 8000
