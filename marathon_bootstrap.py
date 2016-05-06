@@ -38,7 +38,8 @@ def create_app_validate(apps_endpoint, marathon_json, app_type):
     elif response.status_code == 201:
         logging.info('Successfully created GeoServer %s app in Marathon.' % app_type)
     else:
-        logging.critical('Unable to create new Marathon App for GeoServer %s.' % app_type)
+        logging.critical('Unable to create new Marathon App for GeoServer %s. Response code %s and error: %s' %
+                         (app_type, response.status_code, response.text))
         sys.exit(1)
 
 
