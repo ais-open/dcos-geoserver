@@ -23,7 +23,7 @@ HAPROXY_PORT = getenv('HAPROXY_PORT', '8080')
 HAPROXY_MASTER_PATH = getenv('HAPROXY_MASTER_PATH', '/geoserver/web geoserver/j_spring_security_check')
 GOSU_USER = getenv('GOSU_USER', 'root:root')
 GEOSERVER_DATA_DIR = getenv('GEOSERVER_DATA_DIR', '/srv/geoserver')
-GEOSERVER_MASTER_APP = FRAMEWORK_NAME + '-master'
+GEOSERVER_MASTER_APP = FRAMEWORK_NAME + '-instance'
 GEOSERVER_SLAVE_APP = FRAMEWORK_NAME + '-slave'
 GEOSERVER_IMAGE = 'gisjedi/geoserver:2.8'
 GS_SLAVE_INSTANCES = int(getenv('GS_SLAVE_INSTANCES', 3))
@@ -60,7 +60,7 @@ with open('configs/geoserver-master.json') as marathon_config:
     marathon_json['labels']['HAPROXY_0_PORT'] = HAPROXY_PORT
     marathon_json['labels']['HAPROXY_0_PATH'] = HAPROXY_MASTER_PATH
 
-create_app_validate(APPS_ENDPOINT, marathon_json, 'master')
+create_app_validate(APPS_ENDPOINT, marathon_json, 'instance')
 
 # Block until master is healthy
 block_for_healthy_app(APPS_ENDPOINT, GEOSERVER_MASTER_APP)
@@ -93,7 +93,7 @@ with open('configs/filter-config.xml') as filter_read:
                 logging.critical('Error restarting GeoServer master')
                 sys.exit(1)
 
-with open('configs/geoserver-slave.json') as marathon_config:
+with open('configs/geoserver-master.json') as marathon_config:
     marathon_json = json.load(marathon_config)
     # Shim in the appropriate config values from environment
     marathon_json['id'] = GEOSERVER_SLAVE_APP
@@ -104,9 +104,9 @@ with open('configs/geoserver-slave.json') as marathon_config:
     marathon_json['labels']['HAPROXY_0_VHOST'] = HAPROXY_VHOST
     marathon_json['labels']['HAPROXY_0_PORT'] = HAPROXY_PORT
 
-create_app_validate(APPS_ENDPOINT, marathon_json, 'slave')
+create_app_validate(APPS_ENDPOINT, marathon_json, 'instance')
 
 block_for_healthy_app(APPS_ENDPOINT, GEOSERVER_MASTER_APP)
-block_for_healthy_app(APPS_ENDPOINT, GEOSERVER_SLAVE_APP)
+#block_for_healthy_app(APPS_ENDPOINT, GEOSERVER_SLAVE_APP)
 
 logging.info('Bootstrap complete.')
