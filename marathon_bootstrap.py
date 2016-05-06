@@ -52,6 +52,7 @@ with open('configs/geoserver-master.json') as marathon_config:
     # Shim in the appropriate config values from environment
     marathon_json['id'] = GEOSERVER_MASTER_APP
     marathon_json['env']['GOSU_USER'] = GOSU_USER
+    marathon_json['instances'] = GS_SLAVE_INSTANCES
     marathon_json['container']['docker']['image'] = GEOSERVER_IMAGE
     marathon_json['container']['volumes'][0]['hostPath'] = HOST_GEOSERVER_DATA_DIR
     marathon_json['labels']['HAPROXY_0_VHOST'] = HAPROXY_VHOST
@@ -94,7 +95,7 @@ with open('configs/filter-config.xml') as filter_read:
 with open('configs/geoserver-master.json') as marathon_config:
     marathon_json = json.load(marathon_config)
     # Shim in the appropriate config values from environment
-    marathon_json['id'] = GEOSERVER_SLAVE_APP
+    marathon_json['id'] = GEOSERVER_MASTER_APP
     marathon_json['env']['GOSU_USER'] = GOSU_USER
     marathon_json['instances'] = GS_SLAVE_INSTANCES
     marathon_json['container']['docker']['image'] = GEOSERVER_IMAGE
