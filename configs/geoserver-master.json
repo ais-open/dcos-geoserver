@@ -48,7 +48,7 @@
 		"GOSU_CHOWN": "/usr/local/tomcat"
 	},
 	"labels": {
-		"HAPROXY_GROUP": "external",
+		"HAPROXY_GROUP": "internal,external",
 		"HAPROXY_0_PORT": "8080",
 		"HAPROXY_0_STICKY": "true",
 		"HAPROXY_0_BACKEND_WEIGHT": "10",
