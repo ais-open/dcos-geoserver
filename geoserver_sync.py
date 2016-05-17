@@ -7,7 +7,7 @@ from geoserver_reload import reload_config
 from marathon import MarathonClient, MarathonError
 
 MARATHON_ROOT_URL = getenv('MARATHON_ROOT_URL', 'http://marathon.mesos:8080')
-MARATHON_APP = getenv('MARATHON_APP', 'geoserver')
+MARATHON_APP = getenv('MARATHON_APP', 'geoserver-instance')
 MARATHON_APP_PORT = int(getenv('MARATHON_APP_PORT', '8080'))
 
 
