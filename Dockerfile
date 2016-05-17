@@ -26,7 +26,7 @@ RUN chmod +x /opt/gs-sync/*.py \
 #FILE_BLACKLIST: comma delimited list of files to ignore during file system polling (.log)
 
 # GeoServer package pass-through settings:
-#FRAMEWORK_NAME: (defaults to GeoServer)
+#FRAMEWORK_NAME: (defaults to geoserver)
 #HAPROXY_VHOST: Public address for access to the GeoServer cluster (defaults to geoserver.marathon.mesos)
 #HAPROXY_PORT: Port bound on marathon-lb for the services (defaults to 8080)
 #HAPROXY_MASTER_PATH: Relative urls that should take preference for the web admin, space delimited

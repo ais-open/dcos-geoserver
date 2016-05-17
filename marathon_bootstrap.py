@@ -57,6 +57,7 @@ with open('configs/geoserver.json') as marathon_config:
     marathon_json['container']['volumes'][0]['hostPath'] = HOST_GEOSERVER_DATA_DIR
     marathon_json['labels']['HAPROXY_0_VHOST'] = HAPROXY_VHOST
     marathon_json['labels']['HAPROXY_0_PORT'] = HAPROXY_PORT
+    marathon_json['labels']['DCOS_PACKAGE_FRAMEWORK_NAME'] = FRAMEWORK_NAME
     if HAPROXY_MASTER_PATH:
         marathon_json['labels']['HAPROXY_0_PATH'] = HAPROXY_MASTER_PATH
 
