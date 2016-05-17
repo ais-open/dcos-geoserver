@@ -15,7 +15,7 @@ def sync_marathon_app():
     """Identify the hosts and ports of executing tasks
 
     Optional environment variables:
-    MARATHON_ROOT_URL: protocal, address or ip and port to Marathon
+    MARATHON_ROOT_URL: protocol, address or ip and port to Marathon
     MARATHON_APP: app name within Marathon used to group all tasks (server instances)
     MARATHON_APP_PORT: internal port of service (internal to docker container: default of 8080)
 
@@ -23,7 +23,7 @@ def sync_marathon_app():
     """
     # Identify the hosts and ports of executing tasks
     try:
-        c = MarathonClient('%s/v2' % MARATHON_ROOT_URL)
+        c = MarathonClient(MARATHON_ROOT_URL)
 
         app = c.get_app(MARATHON_APP)
 

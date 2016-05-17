@@ -18,7 +18,7 @@ MARATHON_ROOT_URL = getenv('MARATHON_ROOT_URL', 'http://marathon.mesos:8080')
 FRAMEWORK_NAME = getenv('FRAMEWORK_NAME', 'geoserver')
 HAPROXY_VHOST = getenv('HAPROXY_VHOST', 'geoserver.marathon.mesos')
 HAPROXY_PORT = getenv('HAPROXY_PORT', '8080')
-HAPROXY_MASTER_PATH = getenv('HAPROXY_MASTER_PATH', '/geoserver/web geoserver/j_spring_security_check')
+HAPROXY_MASTER_PATH = getenv('HAPROXY_MASTER_PATH', None)
 GOSU_USER = getenv('GOSU_USER', 'root:root')
 GEOSERVER_DATA_DIR = getenv('GEOSERVER_DATA_DIR', '/srv/geoserver')
 GEOSERVER_MASTER_APP = FRAMEWORK_NAME + '-instance'
@@ -57,7 +57,8 @@ with open('configs/geoserver-master.json') as marathon_config:
     marathon_json['container']['volumes'][0]['hostPath'] = HOST_GEOSERVER_DATA_DIR
     marathon_json['labels']['HAPROXY_0_VHOST'] = HAPROXY_VHOST
     marathon_json['labels']['HAPROXY_0_PORT'] = HAPROXY_PORT
-    marathon_json['labels']['HAPROXY_0_PATH'] = HAPROXY_MASTER_PATH
+    if HAPROXY_MASTER_PATH:
+        marathon_json['labels']['HAPROXY_0_PATH'] = HAPROXY_MASTER_PATH
 
 create_app_validate(APPS_ENDPOINT, marathon_json, 'instance')
 
