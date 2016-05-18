@@ -11,7 +11,8 @@ from os import getenv
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(message)s',
-                    datefmt='%Y-%m-%d %H:%M:%S')
+                    datefmt='%Y-%m-%d %H:%M:%S',
+                    stream=sys.stdout)
 
 MARATHON_ROOT_URL = getenv('MARATHON_ROOT_URL', 'http://marathon.mesos:8080')
 

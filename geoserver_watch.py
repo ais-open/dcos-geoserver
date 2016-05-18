@@ -2,6 +2,7 @@
 
 import logging
 import signal
+import sys
 from os import getenv
 
 from watchdog.observers.polling import PollingObserver
@@ -9,7 +10,8 @@ from geoserver_fs_handler import GeoServerFileSystemEventHandler
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(message)s',
-                    datefmt='%Y-%m-%d %H:%M:%S')
+                    datefmt='%Y-%m-%d %H:%M:%S',
+                    stream=sys.stdout)
 
 GEOSERVER_DATA_DIR = getenv('GEOSERVER_DATA_DIR', '/srv/geoserver')
 POLLING_INTERVAL = int(getenv('POLLING_INTERVAL', '5'))
