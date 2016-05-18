@@ -46,7 +46,7 @@ def create_app_validate(client, marathon_app):
 
 
 def block_for_healthy_app(client, app_name, target_healthy):
-    while client.get_app(app_name).tasks_healthy == target_healthy:
+    while client.get_app(app_name).tasks_healthy < target_healthy:
         logging.info("Waiting for healthy app %s." % app_name)
         time.sleep(5)
 
