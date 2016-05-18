@@ -24,6 +24,8 @@ GEOSERVER_DATA_DIR = getenv('GEOSERVER_DATA_DIR', '/srv/geoserver')
 GEOSERVER_APP = '%s-instance' % FRAMEWORK_NAME
 GEOSERVER_IMAGE = 'gisjedi/geoserver:2.8'
 GEOSERVER_INSTANCES = int(getenv('GEOSERVER_INSTANCES', 3))
+GEOSERVER_MEMORY = int(getenv('GEOSERVER_MEMORY', 512))
+GEOSERVER_CPUS = int(getenv('GEOSERVER_CPUS', 2))
 HOST_GEOSERVER_DATA_DIR = getenv('HOST_GEOSERVER_DATA_DIR', '/shared/geoserver')
 
 APPS_ENDPOINT = '%s/v2/apps' % MARATHON_ROOT_URL
@@ -51,6 +53,8 @@ with open('configs/geoserver.json') as marathon_config:
     marathon_json = json.load(marathon_config)
     # Shim in the appropriate config values from environment
     marathon_json['id'] = GEOSERVER_APP
+    marathon_json['cpus'] = GEOSERVER_CPUS
+    marathon_json['mem'] = GEOSERVER_MEMORY
     marathon_json['env']['GOSU_USER'] = GOSU_USER
     marathon_json['instances'] = GEOSERVER_INSTANCES
     marathon_json['container']['docker']['image'] = GEOSERVER_IMAGE
