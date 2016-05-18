@@ -24,7 +24,6 @@ HAPROXY_MASTER_PATH = getenv('HAPROXY_MASTER_PATH', None)
 GOSU_USER = getenv('GOSU_USER', 'root:root')
 GEOSERVER_DATA_DIR = getenv('GEOSERVER_DATA_DIR', '/srv/geoserver')
 GEOSERVER_APP = '%s-instance' % FRAMEWORK_NAME
-GEOSERVER_IMAGE = 'gisjedi/geoserver:2.8'
 GEOSERVER_INSTANCES = int(getenv('GEOSERVER_INSTANCES', 3))
 GEOSERVER_MEMORY = int(getenv('GEOSERVER_MEMORY', 512))
 GEOSERVER_CPUS = int(getenv('GEOSERVER_CPUS', 2))
@@ -60,8 +59,7 @@ with open('configs/geoserver.json') as marathon_config:
     marathon_app.mem = GEOSERVER_MEMORY
     marathon_app.instances = GEOSERVER_INSTANCES
     marathon_app.env['GOSU_USER'] = GOSU_USER
-    marathon_app.container['image'] = GEOSERVER_IMAGE
-    marathon_app.container['volumes'][0]['hostPath'] = HOST_GEOSERVER_DATA_DIR
+    marathon_app.container.volumes[0].host_path = HOST_GEOSERVER_DATA_DIR
     marathon_app.labels['HAPROXY_0_VHOST'] = HAPROXY_VHOST
     marathon_app.labels['HAPROXY_0_PORT'] = HAPROXY_PORT
     marathon_app.labels['DCOS_PACKAGE_FRAMEWORK_NAME'] = FRAMEWORK_NAME
