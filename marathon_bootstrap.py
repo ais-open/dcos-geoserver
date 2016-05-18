@@ -2,12 +2,13 @@
 
 import json
 import logging
-import requests
 import shutil
 import sys
 import time
 
 from os import getenv
+from marathon import MarathonClient, NotFoundError
+from marathon.models import MarathonApp
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(message)s',
@@ -29,47 +30,48 @@ GEOSERVER_MEMORY = int(getenv('GEOSERVER_MEMORY', 512))
 GEOSERVER_CPUS = int(getenv('GEOSERVER_CPUS', 2))
 HOST_GEOSERVER_DATA_DIR = getenv('HOST_GEOSERVER_DATA_DIR', '/shared/geoserver')
 
-APPS_ENDPOINT = '%s/v2/apps' % MARATHON_ROOT_URL
+MARATHON_CLIENT = MarathonClient(MARATHON_ROOT_URL)
 
 
-def create_app_validate(apps_endpoint, marathon_json):
-    response = requests.post(apps_endpoint, data=json.dumps(marathon_json))
-    if response.status_code == 409:
+def create_app_validate(client, marathon_app):
+    try:
+        client.get_app(marathon_app.id)
         logging.info('Application for GeoServer already created, moving on.')
-    elif response.status_code == 201:
-        logging.info('Successfully created GeoServer app in Marathon.')
-    else:
-        logging.critical('Unable to create new Marathon App for GeoServer. Response code %s and error: %s' %
-                         (response.status_code, response.text))
-        sys.exit(1)
+    except NotFoundError:
+        try:
+            client.create_app(marathon_app.id, marathon_app)
+            logging.info('Successfully created GeoServer app in Marathon.')
+        except:
+            logging.exception('Unable to create new Marathon App for GeoServer.')
+            sys.exit(1)
 
 
-def block_for_healthy_app(apps_endpoint, app_name):
-    while json.loads(requests.get('%s/%s' % (apps_endpoint, app_name)).text)['app']['tasksHealthy'] == 0:
+def block_for_healthy_app(client, app_name, target_healthy):
+    while client.get_app(app_name).tasks_healthy == target_healthy:
         logging.info("Waiting for healthy app %s." % app_name)
         time.sleep(5)
 
 
 with open('configs/geoserver.json') as marathon_config:
-    marathon_json = json.load(marathon_config)
+    marathon_app = MarathonApp.from_json(json.load(marathon_config))
     # Shim in the appropriate config values from environment
-    marathon_json['id'] = GEOSERVER_APP
-    marathon_json['cpus'] = GEOSERVER_CPUS
-    marathon_json['mem'] = GEOSERVER_MEMORY
-    marathon_json['env']['GOSU_USER'] = GOSU_USER
-    marathon_json['instances'] = GEOSERVER_INSTANCES
-    marathon_json['container']['docker']['image'] = GEOSERVER_IMAGE
-    marathon_json['container']['volumes'][0]['hostPath'] = HOST_GEOSERVER_DATA_DIR
-    marathon_json['labels']['HAPROXY_0_VHOST'] = HAPROXY_VHOST
-    marathon_json['labels']['HAPROXY_0_PORT'] = HAPROXY_PORT
-    marathon_json['labels']['DCOS_PACKAGE_FRAMEWORK_NAME'] = FRAMEWORK_NAME
+    marathon_app.id = GEOSERVER_APP
+    marathon_app.cpus = GEOSERVER_CPUS
+    marathon_app.mem = GEOSERVER_MEMORY
+    marathon_app.instances = GEOSERVER_INSTANCES
+    marathon_app.env['GOSU_USER'] = GOSU_USER
+    marathon_app.container['image'] = GEOSERVER_IMAGE
+    marathon_app.container['volumes'][0]['hostPath'] = HOST_GEOSERVER_DATA_DIR
+    marathon_app.labels['HAPROXY_0_VHOST'] = HAPROXY_VHOST
+    marathon_app.labels['HAPROXY_0_PORT'] = HAPROXY_PORT
+    marathon_app.labels['DCOS_PACKAGE_FRAMEWORK_NAME'] = FRAMEWORK_NAME
     if HAPROXY_MASTER_PATH:
-        marathon_json['labels']['HAPROXY_0_PATH'] = HAPROXY_MASTER_PATH
+        marathon_app.labels['HAPROXY_0_PATH'] = HAPROXY_MASTER_PATH
 
-create_app_validate(APPS_ENDPOINT, marathon_json)
+create_app_validate(MARATHON_CLIENT, marathon_app)
 
 # Block until GeoServer is healthy
-block_for_healthy_app(APPS_ENDPOINT, GEOSERVER_APP)
+block_for_healthy_app(MARATHON_CLIENT, GEOSERVER_APP, GEOSERVER_INSTANCES)
 
 # Inject the filter chain to expose reload REST endpoint for anonymous use
 with open('configs/filter-config.xml') as filter_read:
@@ -92,15 +94,12 @@ with open('configs/filter-config.xml') as filter_read:
             shutil.move('%s/security/config.xml-output' % GEOSERVER_DATA_DIR,
                         '%s/security/config.xml' % GEOSERVER_DATA_DIR)
 
-            response = requests.post('%s/%s/restart' % (APPS_ENDPOINT, GEOSERVER_APP),
-                                     data=json.dumps(marathon_json))
+            response = MARATHON_CLIENT.kill_tasks(GEOSERVER_APP)
 
-            if not response.status_code == 200:
+            if not len(response) == GEOSERVER_INSTANCES:
                 logging.critical('Error restarting GeoServer')
                 sys.exit(1)
 
-create_app_validate(APPS_ENDPOINT, marathon_json)
-
-block_for_healthy_app(APPS_ENDPOINT, GEOSERVER_APP)
+block_for_healthy_app(MARATHON_CLIENT, GEOSERVER_APP, GEOSERVER_INSTANCES)
 
 logging.info('Bootstrap complete.')
