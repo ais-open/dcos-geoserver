@@ -27,6 +27,7 @@ GEOSERVER_APP = '%s-instance' % FRAMEWORK_NAME
 GEOSERVER_INSTANCES = int(getenv('GEOSERVER_INSTANCES', 3))
 GEOSERVER_MEMORY = int(getenv('GEOSERVER_MEMORY', 512))
 GEOSERVER_CPUS = int(getenv('GEOSERVER_CPUS', 2))
+GEOSERVER_IMAGE = getenv('GEOSERVER_IMAGE', 'appliedis/geoserver:2.8')
 HOST_GEOSERVER_DATA_DIR = getenv('HOST_GEOSERVER_DATA_DIR', '/shared/geoserver')
 
 MARATHON_CLIENT = MarathonClient(MARATHON_ROOT_URL)
@@ -60,6 +61,7 @@ with open('configs/geoserver.json') as marathon_config:
     marathon_app.instances = GEOSERVER_INSTANCES
     marathon_app.env['GOSU_USER'] = GOSU_USER
     marathon_app.container.volumes[0].host_path = HOST_GEOSERVER_DATA_DIR
+    marathon_app.container.docker.image = GEOSERVER_IMAGE
     marathon_app.labels['HAPROXY_0_VHOST'] = HAPROXY_VHOST
     marathon_app.labels['HAPROXY_0_PORT'] = HAPROXY_PORT
     marathon_app.labels['DCOS_PACKAGE_FRAMEWORK_NAME'] = FRAMEWORK_NAME

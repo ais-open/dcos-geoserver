@@ -40,4 +40,5 @@ or to tune the synchronization of the instances on configuration update.
 * GEOSERVER_INSTANCES: Number of server instances in cluster (defaults to 3)
 * GEOSERVER_CPUS: CPU cores alloted to each GeoServer instance (defaults to 2)
 * GEOSERVER_MEMORY: Memory alloted to each GeoServer instance (defaults to 512MiB)
+* GEOSERVER_IMAGE: Docker image used for the GeoServer instance (defaults to appliedis/geoserver:2.8)
 * HOST_GEOSERVER_DATA_DIR: location the GeoServer data directory resides on the host (defaults to /shared/geoserver)
