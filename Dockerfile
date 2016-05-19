@@ -1,4 +1,4 @@
-FROM hmtisr/centos:7-gosu
+FROM appliedis/centos:7-gosu
 
 RUN curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py" \
     && python get-pip.py \
