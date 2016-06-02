@@ -111,10 +111,7 @@ with open('configs/filter-config.xml') as filter_read:
                 logging.critical('Error restarting GeoServer')
                 sys.exit(1)
 
-response = MARATHON_CLIENT.scale_app(GEOSERVER_APP, GEOSERVER_INSTANCES)
-if not len(response) == GEOSERVER_INSTANCES:
-    logging.critical('Error scaling GeoServer')
-    sys.exit(1)
+MARATHON_CLIENT.scale_app(GEOSERVER_APP, GEOSERVER_INSTANCES)
 
 block_for_healthy_app(MARATHON_CLIENT, GEOSERVER_APP, GEOSERVER_INSTANCES)
 
