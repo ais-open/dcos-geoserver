@@ -59,8 +59,10 @@ with open('configs/geoserver.json') as marathon_config:
     marathon_app.id = GEOSERVER_APP
     marathon_app.cpus = GEOSERVER_CPUS
     marathon_app.mem = GEOSERVER_MEMORY
-    marathon_app.instances = GEOSERVER_INSTANCES
+    marathon_app.instances = 1
     marathon_app.env['GOSU_USER'] = GOSU_USER
+    marathon_app.env['GEOSERVER_HOSTNAME'] = HAPROXY_VHOST
+    marathon_app.env['INSTANCE_MEMORY'] = GEOSERVER_MEMORY
     marathon_app.container.volumes[0].host_path = HOST_GEOSERVER_DATA_DIR
     # If HOST_SUPPLEMENTAL_DATA_DIRS set, add read-only volume mounts as needed
     if HOST_SUPPLEMENTAL_DATA_DIRS and len(HOST_SUPPLEMENTAL_DATA_DIRS.split(',')):
@@ -80,7 +82,7 @@ with open('configs/geoserver.json') as marathon_config:
 create_app_validate(MARATHON_CLIENT, marathon_app)
 
 # Block until GeoServer is healthy
-block_for_healthy_app(MARATHON_CLIENT, GEOSERVER_APP, GEOSERVER_INSTANCES)
+block_for_healthy_app(MARATHON_CLIENT, GEOSERVER_APP, 1)
 
 # Inject the filter chain to expose reload REST endpoint for anonymous use
 with open('configs/filter-config.xml') as filter_read:
@@ -105,9 +107,14 @@ with open('configs/filter-config.xml') as filter_read:
 
             response = MARATHON_CLIENT.kill_tasks(GEOSERVER_APP)
 
-            if not len(response) == GEOSERVER_INSTANCES:
+            if not len(response) == 1:
                 logging.critical('Error restarting GeoServer')
                 sys.exit(1)
+
+response = MARATHON_CLIENT.scale_app(GEOSERVER_APP, GEOSERVER_INSTANCES)
+if not len(response) == GEOSERVER_INSTANCES:
+    logging.critical('Error scaling GeoServer')
+    sys.exit(1)
 
 block_for_healthy_app(MARATHON_CLIENT, GEOSERVER_APP, GEOSERVER_INSTANCES)
 
