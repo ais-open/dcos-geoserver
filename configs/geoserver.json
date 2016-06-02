@@ -45,7 +45,7 @@
 	],
 	"env": {
 		"GOSU_USER": "root:root",
-		"GOSU_CHOWN": "/etc/geoserver,/var/log/geoserver",
+		"GOSU_CHOWN": "/etc/geoserver /var/log/geoserver",
 		"INSTANCE_MEMORY": "512"
 	},
 	"labels": {
