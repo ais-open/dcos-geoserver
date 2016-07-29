@@ -9,6 +9,7 @@ import time
 from os import getenv
 from marathon import MarathonClient, NotFoundError
 from marathon.models import MarathonApp
+from marathon.models.container import MarathonContainerVolume
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(message)s',
@@ -66,12 +67,9 @@ with open('configs/geoserver.json') as marathon_config:
     marathon_app.container.volumes[0].host_path = HOST_GEOSERVER_DATA_DIR
     # If HOST_SUPPLEMENTAL_DATA_DIRS set, add read-only volume mounts as needed
     if HOST_SUPPLEMENTAL_DATA_DIRS and len(HOST_SUPPLEMENTAL_DATA_DIRS.split(',')):
-        index = 1
-        for supplemental_dir in HOST_SUPPLEMENTAL_DATA_DIRS.split(','):
-            marathon_app.container.volumes[index].container_path = supplemental_dir
-            marathon_app.container.volumes[index].host_path = supplemental_dir
-            marathon_app.container.volumes[index].mode = 'RO'
-            index += 1
+        for host_dir in HOST_SUPPLEMENTAL_DATA_DIRS.split(','):
+            volume = MarathonContainerVolume(host_dir, host_dir, 'RO')
+            marathon_app.container.volumes.append(volume)
     marathon_app.container.docker.image = GEOSERVER_IMAGE
     marathon_app.labels['HAPROXY_0_VHOST'] = HAPROXY_VHOST
     marathon_app.labels['HAPROXY_0_PORT'] = HAPROXY_PORT
