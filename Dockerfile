@@ -1,8 +1,4 @@
-FROM appliedis/centos:7-gosu
-
-RUN curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py" \
-    && python get-pip.py \
-    && rm get-pip.py
+FROM python:2.7-alpine
 
 COPY requirements.txt /
 RUN pip install -r requirements.txt
