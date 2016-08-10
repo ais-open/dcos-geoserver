@@ -9,6 +9,7 @@ import time
 from os import getenv
 from marathon import MarathonClient, NotFoundError
 from marathon.models import MarathonApp
+from marathon.models.container import MarathonContainerVolume
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(message)s',
@@ -23,11 +24,11 @@ HAPROXY_PORT = getenv('HAPROXY_PORT', '8080')
 HAPROXY_MASTER_PATH = getenv('HAPROXY_MASTER_PATH', None)
 GOSU_USER = getenv('GOSU_USER', 'root:root')
 GEOSERVER_DATA_DIR = getenv('GEOSERVER_DATA_DIR', '/srv/geoserver')
-GEOSERVER_APP = '%s-instance' % FRAMEWORK_NAME
+GEOSERVER_APP = '/%s/geoserver-app' % FRAMEWORK_NAME
 GEOSERVER_INSTANCES = int(getenv('GEOSERVER_INSTANCES', 3))
 GEOSERVER_MEMORY = int(getenv('GEOSERVER_MEMORY', 512))
 GEOSERVER_CPUS = int(getenv('GEOSERVER_CPUS', 2))
-GEOSERVER_IMAGE = getenv('GEOSERVER_IMAGE', 'appliedis/geoserver:2.8')
+GEOSERVER_IMAGE = getenv('GEOSERVER_IMAGE', 'appliedis/geoserver:2.8-alpine')
 HOST_GEOSERVER_DATA_DIR = getenv('HOST_GEOSERVER_DATA_DIR', '/shared/geoserver')
 HOST_SUPPLEMENTAL_DATA_DIRS = getenv('HOST_SUPPLEMENTAL_DATA_DIRS', None)
 
@@ -66,12 +67,8 @@ with open('configs/geoserver.json') as marathon_config:
     marathon_app.container.volumes[0].host_path = HOST_GEOSERVER_DATA_DIR
     # If HOST_SUPPLEMENTAL_DATA_DIRS set, add read-only volume mounts as needed
     if HOST_SUPPLEMENTAL_DATA_DIRS and len(HOST_SUPPLEMENTAL_DATA_DIRS.split(',')):
-        index = 1
-        for supplemental_dir in HOST_SUPPLEMENTAL_DATA_DIRS.split(','):
-            marathon_app.container.volumes[index].container_path = supplemental_dir
-            marathon_app.container.volumes[index].host_path = supplemental_dir
-            marathon_app.container.volumes[index].mode = 'RO'
-            index += 1
+        for sup_dir in HOST_SUPPLEMENTAL_DATA_DIRS.split(','):
+            marathon_app.container.volumes.append(MarathonContainerVolume(sup_dir, sup_dir, 'RO'))
     marathon_app.container.docker.image = GEOSERVER_IMAGE
     marathon_app.labels['HAPROXY_0_VHOST'] = HAPROXY_VHOST
     marathon_app.labels['HAPROXY_0_PORT'] = HAPROXY_PORT
