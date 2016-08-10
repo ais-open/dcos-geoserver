@@ -11,13 +11,13 @@ performed in round robin fashion on a configurable interval.
 
 From the DCOS Administrative Web UI browse to the Universe package page, select the GeoServer package and click Install.
 If marathon-lb is not already installed, it should also be installed from the Universe package page.
-Within a minute the _geoserver_ and _geoserver-instance_ applications should be active and healthy. Once it is healthy
-simply browse to the URL specified in the haproxy-vhost label of the geoserver-instance application in Marathon. This 
+Within a minute the _geoserver_ and _geoserver-app_ applications should be active and healthy. Once it is healthy
+simply browse to the URL specified in the haproxy-vhost label of the _geoserver-app_ application in Marathon. This
 defaults to geoserver.marathon.mesos unless overridden with the advanced install settings.
   
 ## Environment Variables
 
-The following are variables that are either used during bootstrapping of the _geoserver-instance_ Marathon application
+The following are variables that are either used during bootstrapping of the _geoserver-app_ Marathon application
 or to tune the synchronization of the instances on configuration update.
  
 ### Synchronization Tuning
@@ -34,6 +34,7 @@ or to tune the synchronization of the instances on configuration update.
 
 ### Bootstrap Tuning
 * FRAMEWORK_NAME: Value passed through from DCOS package (defaults to geoserver)
+* AUTH_URI: URI to a .dockercfg file used to pull from private registry (no default)
 * HAPROXY_VHOST: Public address for access to the GeoServer cluster (defaults to geoserver.marathon.mesos)
 * HAPROXY_PORT: Port bound on marathon-lb for the services (defaults to 8080)
 * HAPROXY_MASTER_PATH: Relative urls that should take preference for the web admin, space delimited

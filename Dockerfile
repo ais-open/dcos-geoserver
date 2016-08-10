@@ -1,4 +1,9 @@
 FROM python:2.7-alpine
+MAINTAINER Jonathan Meyer <jon@gisjedi.com>
+
+LABEL name="DCOS GeoServer Bootstrap Image" \
+    vendor="Applied Information Sciences" \
+    license="Apache v2.0"
 
 COPY requirements.txt /
 RUN pip install -r requirements.txt

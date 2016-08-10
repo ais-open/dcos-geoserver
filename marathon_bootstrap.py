@@ -19,6 +19,7 @@ logging.basicConfig(level=logging.INFO,
 MARATHON_ROOT_URL = getenv('MARATHON_ROOT_URL', 'http://marathon.mesos:8080')
 
 FRAMEWORK_NAME = getenv('FRAMEWORK_NAME', 'geoserver')
+AUTH_URI = getenv('AUTH_URI', None)
 HAPROXY_VHOST = getenv('HAPROXY_VHOST', 'geoserver.marathon.mesos')
 HAPROXY_PORT = getenv('HAPROXY_PORT', '8080')
 HAPROXY_MASTER_PATH = getenv('HAPROXY_MASTER_PATH', None)
@@ -73,6 +74,8 @@ with open('configs/geoserver.json') as marathon_config:
     marathon_app.labels['HAPROXY_0_VHOST'] = HAPROXY_VHOST
     marathon_app.labels['HAPROXY_0_PORT'] = HAPROXY_PORT
     marathon_app.labels['DCOS_PACKAGE_FRAMEWORK_NAME'] = FRAMEWORK_NAME
+    if AUTH_URI:
+        marathon_app.fetch = [{ 'uri': AUTH_URI }]
     if HAPROXY_MASTER_PATH:
         marathon_app.labels['HAPROXY_0_PATH'] = HAPROXY_MASTER_PATH
 
