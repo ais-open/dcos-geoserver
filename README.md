@@ -21,26 +21,26 @@ The following are variables that are either used during bootstrapping of the _ge
 or to tune the synchronization of the instances on configuration update.
  
 ### Synchronization Tuning
+* FILE_BLACKLIST: comma delimited list of files to ignore during file system polling (.log)
 * GEOSERVER_DATA_DIR: file system location to watch for updates
+* GOSU_USER: User ID and group ID (user:group) ownership of GeoServer configuration storage. (default of _root:root_)
 * GS_RELOAD_INTERVAL: time in seconds between reload of each instance
 * GS_PROTOCOL: protocol prefix, should be set to 'http' or 'https'
 * GS_RELATIVE_URL: relative URL to GeoServer REST API
-* GOSU_USER: User ID and group ID (user:group) ownership of GeoServer configuration storage. (default of _root:root_)
 * MARATHON_ROOT_URL: protocal, address or ip and port to Marathon (default of http://marathon.mesos:8080)
 * MARATHON_APP: app name within Marathon used to group all tasks (server instances)
 * MARATHON_APP_PORT: internal port of service (internal to docker container: default of 8080)
 * POLLING_INTERVAL: time in seconds between file system poll for configuration updates
-* FILE_BLACKLIST: comma delimited list of files to ignore during file system polling (.log)
 
 ### Bootstrap Tuning
-* FRAMEWORK_NAME: Value passed through from DCOS package (defaults to geoserver)
 * AUTH_URI: URI to a .dockercfg file used to pull from private registry (no default)
-* HAPROXY_VHOST: Public address for access to the GeoServer cluster (defaults to geoserver.marathon.mesos)
-* HAPROXY_PORT: Port bound on marathon-lb for the services (defaults to 8080)
-* HAPROXY_MASTER_PATH: Relative urls that should take preference for the web admin, space delimited
+* ENABLE_CORS: Boolean indicating whether GeoServer image should add response headers for CORS (default is false)
+* FRAMEWORK_NAME: Value passed through from DCOS package (defaults to geoserver)
 * GEOSERVER_INSTANCES: Number of server instances in cluster (defaults to 3)
 * GEOSERVER_CPUS: CPU cores alloted to each GeoServer instance (defaults to 2)
 * GEOSERVER_MEMORY: Memory alloted to each GeoServer instance (defaults to 512MiB)
 * GEOSERVER_IMAGE: Docker image used for the GeoServer instance (defaults to appliedis/geoserver:2.8)
+* HAPROXY_VHOST: Public address for access to the GeoServer cluster (defaults to geoserver.marathon.mesos)
+* HAPROXY_PORT: Port bound on marathon-lb for the services (defaults to 8080)
 * HOST_GEOSERVER_DATA_DIR: location the GeoServer data directory resides on the host (defaults to /shared/geoserver)
 * HOST_SUPPLEMENTAL_DATA_DIRS: comma separated locations of data stored on host to mount RO into container (no default)

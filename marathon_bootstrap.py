@@ -18,11 +18,8 @@ logging.basicConfig(level=logging.INFO,
 
 MARATHON_ROOT_URL = getenv('MARATHON_ROOT_URL', 'http://marathon.mesos:8080')
 
-FRAMEWORK_NAME = getenv('FRAMEWORK_NAME', 'geoserver')
 AUTH_URI = getenv('AUTH_URI', None)
-HAPROXY_VHOST = getenv('HAPROXY_VHOST', 'geoserver.marathon.mesos')
-HAPROXY_PORT = getenv('HAPROXY_PORT', '8080')
-HAPROXY_MASTER_PATH = getenv('HAPROXY_MASTER_PATH', None)
+FRAMEWORK_NAME = getenv('FRAMEWORK_NAME', 'geoserver')
 GOSU_USER = getenv('GOSU_USER', 'root:root')
 GEOSERVER_DATA_DIR = getenv('GEOSERVER_DATA_DIR', '/srv/geoserver')
 GEOSERVER_APP = '%s-app' % FRAMEWORK_NAME
@@ -30,6 +27,9 @@ GEOSERVER_INSTANCES = int(getenv('GEOSERVER_INSTANCES', 3))
 GEOSERVER_MEMORY = int(getenv('GEOSERVER_MEMORY', 512))
 GEOSERVER_CPUS = int(getenv('GEOSERVER_CPUS', 2))
 GEOSERVER_IMAGE = getenv('GEOSERVER_IMAGE', 'appliedis/geoserver:2.8-alpine')
+ENABLE_CORS = getenv('ENABLE_CORS', 'false')
+HAPROXY_VHOST = getenv('HAPROXY_VHOST', 'geoserver.marathon.mesos')
+HAPROXY_PORT = getenv('HAPROXY_PORT', '8080')
 HOST_GEOSERVER_DATA_DIR = getenv('HOST_GEOSERVER_DATA_DIR', '/shared/geoserver')
 HOST_SUPPLEMENTAL_DATA_DIRS = getenv('HOST_SUPPLEMENTAL_DATA_DIRS', None)
 
@@ -62,6 +62,7 @@ with open('configs/geoserver.json') as marathon_config:
     marathon_app.cpus = GEOSERVER_CPUS
     marathon_app.mem = GEOSERVER_MEMORY
     marathon_app.instances = 1
+    marathon_app.env['ENABLE_CORS'] = ENABLE_CORS
     marathon_app.env['GOSU_USER'] = GOSU_USER
     marathon_app.env['GEOSERVER_HOSTNAME'] = HAPROXY_VHOST
     marathon_app.env['INSTANCE_MEMORY'] = str(GEOSERVER_MEMORY)
@@ -76,8 +77,6 @@ with open('configs/geoserver.json') as marathon_config:
     marathon_app.labels['DCOS_PACKAGE_FRAMEWORK_NAME'] = FRAMEWORK_NAME
     if AUTH_URI:
         marathon_app.fetch = [{ 'uri': AUTH_URI }]
-    if HAPROXY_MASTER_PATH:
-        marathon_app.labels['HAPROXY_0_PATH'] = HAPROXY_MASTER_PATH
 
 create_app_validate(MARATHON_CLIENT, marathon_app)
 
