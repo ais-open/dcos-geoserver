@@ -27,15 +27,15 @@ or to tune the synchronization of the instances on configuration update.
 * GS_RELOAD_INTERVAL: time in seconds between reload of each instance
 * GS_PROTOCOL: protocol prefix, should be set to 'http' or 'https'
 * GS_RELATIVE_URL: relative URL to GeoServer REST API
-* MARATHON_ROOT_URL: protocal, address or ip and port to Marathon (default of http://marathon.mesos:8080)
-* MARATHON_APP: app name within Marathon used to group all tasks (server instances)
+* MARATHON_ROOT_URL: protocal, address or ip and port to Marathon (default of 
+['http://marathon.mesos:8080','https://marathon.mesos:8443'])
 * MARATHON_APP_PORT: internal port of service (internal to docker container: default of 8080)
 * POLLING_INTERVAL: time in seconds between file system poll for configuration updates
 
 ### Bootstrap Tuning
 * AUTH_URI: URI to a .dockercfg file used to pull from private registry (no default)
+* DCOS_PACKAGE_FRAMEWORK_NAME: Value passed through from DCOS package (defaults to geoserver)
 * ENABLE_CORS: Boolean indicating whether GeoServer image should add response headers for CORS (default is false)
-* FRAMEWORK_NAME: Value passed through from DCOS package (defaults to geoserver)
 * GEOSERVER_INSTANCES: Number of server instances in cluster (defaults to 3)
 * GEOSERVER_CPUS: CPU cores alloted to each GeoServer instance (defaults to 2)
 * GEOSERVER_MEMORY: Memory alloted to each GeoServer instance (defaults to 512MiB)
