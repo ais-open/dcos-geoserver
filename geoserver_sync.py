@@ -6,8 +6,9 @@ from os import getenv
 from geoserver_reload import reload_config
 from marathon import MarathonClient, MarathonError
 
-MARATHON_ROOT_URL = getenv('MARATHON_ROOT_URL', 'http://marathon.mesos:8080')
-MARATHON_APP = getenv('MARATHON_APP', 'geoserver-instance')
+MARATHON_ROOT_URLS = getenv('MARATHON_ROOT_URLS', ['http://marathon.mesos:8080','https://marathon.mesos:8443'])
+FRAMEWORK_NAME = getenv('DCOS_PACKAGE_FRAMEWORK_NAME', 'geoserver')
+MARATHON_APP = '%s-app' % FRAMEWORK_NAME
 MARATHON_APP_PORT = int(getenv('MARATHON_APP_PORT', '8080'))
 
 
@@ -23,7 +24,7 @@ def sync_marathon_app():
     """
     # Identify the hosts and ports of executing tasks
     try:
-        c = MarathonClient(MARATHON_ROOT_URL)
+        c = MarathonClient(MARATHON_ROOT_URLS)
 
         app = c.get_app(MARATHON_APP)
 
