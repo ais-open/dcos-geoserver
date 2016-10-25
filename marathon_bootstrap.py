@@ -64,7 +64,13 @@ with open('configs/geoserver.json') as marathon_config:
     marathon_app.instances = 1
     marathon_app.env['ENABLE_CORS'] = ENABLE_CORS
     marathon_app.env['GOSU_USER'] = GOSU_USER
-    marathon_app.env['GEOSERVER_HOSTNAME'] = HAPROXY_VHOST
+
+    geoserver_hostname = HAPROXY_VHOST
+    # If multiple VHOSTs are specified, only apply the first as the GeoServer global value.
+    if ',' in geoserver_hostname:
+        geoserver_hostname = geoserver_hostname.split(',')[0]
+
+    marathon_app.env['GEOSERVER_HOSTNAME'] = geoserver_hostname
     marathon_app.env['INSTANCE_MEMORY'] = str(GEOSERVER_MEMORY)
     marathon_app.container.volumes[0].host_path = HOST_GEOSERVER_DATA_DIR
     # If HOST_SUPPLEMENTAL_DATA_DIRS set, add read-only volume mounts as needed
