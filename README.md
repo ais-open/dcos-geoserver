@@ -40,7 +40,7 @@ or to tune the synchronization of the instances on configuration update.
 * GEOSERVER_INSTANCES: Number of server instances in cluster (defaults to 3)
 * GEOSERVER_CPUS: CPU cores alloted to each GeoServer instance (defaults to 2)
 * GEOSERVER_MEMORY: Memory alloted to each GeoServer instance (defaults to 512MiB)
-* GEOSERVER_IMAGE: Docker image used for the GeoServer instance (defaults to appliedis/geoserver:2.8)
+* GEOSERVER_IMAGE: Docker image used for the GeoServer instance (defaults to appliedis/geoserver:2.10.0)
 * HAPROXY_VHOST: Public address for access to the GeoServer cluster (defaults to geoserver.marathon.mesos). 
 Multiple values are allowed in comma delimited form (http://public1,http://public2). 
 * HAPROXY_PORT: Port bound on marathon-lb for the services (defaults to 8080)

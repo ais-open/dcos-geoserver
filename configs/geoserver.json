@@ -7,7 +7,7 @@
 	"container": {
 		"type": "DOCKER",
 		"docker": {
-			"image": "appliedis/geoserver:2.8-alpine",
+			"image": "appliedis/geoserver:2.10.0",
 			"network": "BRIDGE",
 			"portMappings": [
 				{
