@@ -34,6 +34,7 @@ or to tune the synchronization of the instances on configuration update.
 
 ### Bootstrap Tuning
 * AUTH_URI: URI to a .dockercfg file used to pull from private registry (no default)
+* DCOS_OAUTH_TOKEN: Auth token for deployment of GeoServer instances in DCOS EE (defaults to '')
 * DCOS_PACKAGE_FRAMEWORK_NAME: Value passed through from DCOS package (defaults to geoserver)
 * ENABLE_CORS: Boolean indicating whether GeoServer image should add response headers for CORS (default is false)
 * GEOSERVER_INSTANCES: Number of server instances in cluster (defaults to 3)

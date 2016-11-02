@@ -19,6 +19,7 @@ logging.basicConfig(level=logging.INFO,
 MARATHON_ROOT_URLS = getenv('MARATHON_ROOT_URLS', ['http://marathon.mesos:8080','https://marathon.mesos:8443'])
 
 AUTH_URI = getenv('AUTH_URI', None)
+DCOS_OAUTH_TOKEN = getenv('DCOS_OAUTH_TOKEN', '').strip()
 FRAMEWORK_NAME = getenv('DCOS_PACKAGE_FRAMEWORK_NAME', 'geoserver')
 GOSU_USER = getenv('GOSU_USER', 'root:root')
 GEOSERVER_DATA_DIR = getenv('GEOSERVER_DATA_DIR', '/srv/geoserver')
@@ -33,7 +34,11 @@ HAPROXY_PORT = getenv('HAPROXY_PORT', '8080')
 HOST_GEOSERVER_DATA_DIR = getenv('HOST_GEOSERVER_DATA_DIR', '/shared/geoserver')
 HOST_SUPPLEMENTAL_DATA_DIRS = getenv('HOST_SUPPLEMENTAL_DATA_DIRS', None)
 
-MARATHON_CLIENT = MarathonClient(MARATHON_ROOT_URLS)
+MARATHON_CLIENT = None
+if len(DCOS_OAUTH_TOKEN):
+    MARATHON_CLIENT = MarathonClient(MARATHON_ROOT_URLS, auth_token=DCOS_OAUTH_TOKEN)
+else:
+    MARATHON_CLIENT = MarathonClient(MARATHON_ROOT_URLS)
 
 
 def create_app_validate(client, marathon_app):
