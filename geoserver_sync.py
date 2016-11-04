@@ -27,7 +27,7 @@ def sync_marathon_app():
     try:
         c = None
         if len(DCOS_OAUTH_TOKEN):
-            c = MarathonClient(MARATHON_ROOT_URLS, DCOS_OAUTH_TOKEN)
+            c = MarathonClient(MARATHON_ROOT_URLS, auth_token=DCOS_OAUTH_TOKEN)
         else:
             c = MarathonClient(MARATHON_ROOT_URLS)
 
