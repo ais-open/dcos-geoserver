@@ -24,12 +24,18 @@ class GeoServerFileSystemEventHandler(FileSystemEventHandler):
                 self.last_update = datetime.now()
                 logging.info('Beginning GeoServer refresh...')
                 sync_marathon_app()
+            else:
+                logging.debug('Skipping GeoServer refresh as we already updated in the last %s seconds.' %
+                              self.polling_interval)
 
     @staticmethod
     def blacklist_check(file_path, blacklist):
         file_name = path.basename(file_path)
         for blacklist_value in blacklist.split(','):
             if len(blacklist_value) and blacklist_value in file_name:
+                logging.debug('Blacklist check failed as %s matches with blacklist value %s' %
+                              (file_name, blacklist_value))
                 return False
 
+        logging.debug('Blacklist check passed.')
         return True

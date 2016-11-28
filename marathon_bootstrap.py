@@ -11,12 +11,14 @@ from marathon import MarathonClient, NotFoundError
 from marathon.models import MarathonApp
 from marathon.models.container import MarathonContainerVolume
 
-logging.basicConfig(level=logging.INFO,
+GS_SYNC_DEBUG = json.loads(getenv('GS_SYNC_DEBUG', 'false').lower())
+
+logging.basicConfig(level=(logging.DEBUG if GS_SYNC_DEBUG else logging.INFO),
                     format='%(asctime)s - %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S',
                     stream=sys.stdout)
 
-MARATHON_ROOT_URLS = getenv('MARATHON_ROOT_URLS', ['http://marathon.mesos:8080','https://marathon.mesos:8443'])
+MARATHON_ROOT_URLS = ['http://marathon.mesos:8080','https://marathon.mesos:8443']
 
 AUTH_URI = getenv('AUTH_URI', None)
 DCOS_OAUTH_TOKEN = getenv('DCOS_OAUTH_TOKEN', '').strip()

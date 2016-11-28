@@ -21,27 +21,26 @@ The following are variables that are either used during bootstrapping of the _ge
 or to tune the synchronization of the instances on configuration update.
  
 ### Synchronization Tuning
-* FILE_BLACKLIST: comma delimited list of files to ignore during file system polling (.log)
-* GEOSERVER_DATA_DIR: file system location to watch for updates
-* GOSU_USER: User ID and group ID (user:group) ownership of GeoServer configuration storage. (default of _root:root_)
+* FILE_BLACKLIST: comma delimited list of files to ignore during file system polling (default: `.log`)
+* GEOSERVER_DATA_DIR: file system location to watch for updates (default: `/shared/geoserver`)
+* GOSU_USER: User ID and group ID (user:group) ownership of GeoServer configuration storage. (default: `root:root`)
 * GS_RELOAD_INTERVAL: time in seconds between reload of each instance
 * GS_PROTOCOL: protocol prefix, should be set to 'http' or 'https'
 * GS_RELATIVE_URL: relative URL to GeoServer REST API
-* MARATHON_ROOT_URL: protocal, address or ip and port to Marathon (default of 
-['http://marathon.mesos:8080','https://marathon.mesos:8443'])
-* MARATHON_APP_PORT: internal port of service (internal to docker container: default of 8080)
+* GS_SYNC_DEBUG: boolean to output verbose messages for debugging synchronization code (default: `false`)
+* MARATHON_APP_PORT: internal port of service running in Docker (default: `8080`)
 * POLLING_INTERVAL: time in seconds between file system poll for configuration updates
 
 ### Bootstrap Tuning
 * AUTH_URI: URI to a .dockercfg file used to pull from private registry (no default)
-* DCOS_OAUTH_TOKEN: Auth token for deployment of GeoServer instances in DCOS EE (defaults to '')
-* DCOS_PACKAGE_FRAMEWORK_NAME: Value passed through from DCOS package (defaults to geoserver)
-* ENABLE_CORS: Boolean indicating whether GeoServer image should add response headers for CORS (default is false)
-* GEOSERVER_INSTANCES: Number of server instances in cluster (defaults to 3)
-* GEOSERVER_CPUS: CPU cores alloted to each GeoServer instance (defaults to 2)
-* GEOSERVER_MEMORY: Memory alloted to each GeoServer instance (defaults to 512MiB)
-* GEOSERVER_IMAGE: Docker image used for the GeoServer instance (defaults to appliedis/geoserver:2.10.0)
-* HAPROXY_VHOST: Public address for access to the GeoServer cluster (defaults to geoserver.marathon.mesos). 
-Multiple values are allowed in comma delimited form (http://public1,http://public2). 
-* HOST_GEOSERVER_DATA_DIR: location the GeoServer data directory resides on the host (defaults to /shared/geoserver)
+* DCOS_OAUTH_TOKEN: Auth token for deployment of GeoServer instances in DCOS EE (no default)
+* DCOS_PACKAGE_FRAMEWORK_NAME: Value passed through from DCOS package (default: `geoserver`)
+* ENABLE_CORS: Boolean indicating whether GeoServer image should add response headers for CORS (default: `false`)
+* GEOSERVER_INSTANCES: Number of server instances in cluster (default: `3`)
+* GEOSERVER_CPUS: CPU cores alloted to each GeoServer instance (default: `2`)
+* GEOSERVER_MEMORY: Memory alloted to each GeoServer instance (default: `512MiB`)
+* GEOSERVER_IMAGE: Docker image used for the GeoServer instance (default: `appliedis/geoserver:2.10.0`)
+* HAPROXY_VHOST: Public address for access to the GeoServer cluster (default: `geoserver.marathon.mesos`). 
+Multiple values are allowed in comma delimited form (default: `http://public1,http://public2`). 
+* HOST_GEOSERVER_DATA_DIR: location the GeoServer data directory resides on the host (default: `/shared/geoserver`)
 * HOST_SUPPLEMENTAL_DATA_DIRS: comma separated locations of data stored on host to mount RO into container (no default)
