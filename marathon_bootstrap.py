@@ -7,6 +7,7 @@ import sys
 import time
 
 from os import getenv
+from os.path import exists
 from marathon import MarathonClient, NotFoundError
 from marathon.models import MarathonApp
 from marathon.models.container import MarathonContainerVolume
@@ -55,6 +56,28 @@ def create_app_validate(client, marathon_app):
             sys.exit(1)
 
 
+def wait_for_deployment(client, app_name, timeout=10, retries=30):
+    time.sleep(timeout)
+    retry = 0
+    while retry < retries:
+        logging.info('Checking to ensure no existing deployments exist for app %s.' % app_name)
+        try:
+            app = client.get_app(app_name, embed_deployments=True)
+            # If the deployment has already completed, we can move on.
+            if not len(app.deployments):
+                logging.info('We do not have to wait as there are no existing deployments for app %s.' % app_name)
+                return
+        except NotFoundError:
+            logging.info('We do not have to wait as there is no existing app %s.' % app_name)
+            return
+
+        time.sleep(timeout)
+        retry += 1
+
+    logging.info('Exceeded retries waiting on deployment to complete. Error will likely now be encountered.')
+
+
+
 def block_for_healthy_app(client, app_name, target_healthy):
     while client.get_app(app_name).tasks_healthy < target_healthy:
         logging.info("Waiting for healthy app %s." % app_name)
@@ -94,6 +117,14 @@ create_app_validate(MARATHON_CLIENT, marathon_app)
 # Block until GeoServer is healthy
 block_for_healthy_app(MARATHON_CLIENT, GEOSERVER_APP, 1)
 
+# Verify completely configured GeoServer. Health check seems to pass before data directory is fully initialized...
+while True:
+    logging.info('Checking for a fully initialized data directory...')
+    if exists('%s/global.xml' % GEOSERVER_DATA_DIR) and exists('%s/security/usergroup/default/users.xml' % GEOSERVER_DATA_DIR) and exists('%s/logging.xml' % GEOSERVER_DATA_DIR):
+        logging.info('Verified a completely initialized data directory.')
+        break
+    time.sleep(5)
+
 # Inject the filter chain to expose reload REST endpoint for anonymous use
 with open('configs/filter-config.xml') as filter_read:
     filter_inject = filter_read.read()
@@ -120,6 +151,8 @@ with open('configs/filter-config.xml') as filter_read:
             if not len(response) == 1:
                 logging.critical('Error restarting GeoServer')
                 sys.exit(1)
+
+wait_for_deployment(MARATHON_CLIENT, GEOSERVER_APP)
 
 MARATHON_CLIENT.scale_app(GEOSERVER_APP, GEOSERVER_INSTANCES)
 
