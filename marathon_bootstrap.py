@@ -22,7 +22,7 @@ AUTH_URI = getenv('AUTH_URI', None)
 DCOS_OAUTH_TOKEN = getenv('DCOS_OAUTH_TOKEN', '').strip()
 FRAMEWORK_NAME = getenv('DCOS_PACKAGE_FRAMEWORK_NAME', 'geoserver')
 GOSU_USER = getenv('GOSU_USER', 'root:root')
-GEOSERVER_DATA_DIR = getenv('GEOSERVER_DATA_DIR', '/srv/geoserver')
+GEOSERVER_DATA_DIR = getenv('GEOSERVER_DATA_DIR', '/etc/geoserver')
 GEOSERVER_APP = '%s-app' % FRAMEWORK_NAME
 GEOSERVER_INSTANCES = int(getenv('GEOSERVER_INSTANCES', 3))
 GEOSERVER_MEMORY = int(getenv('GEOSERVER_MEMORY', 512))
@@ -30,7 +30,6 @@ GEOSERVER_CPUS = int(getenv('GEOSERVER_CPUS', 2))
 GEOSERVER_IMAGE = getenv('GEOSERVER_IMAGE', 'appliedis/geoserver:2.10.0')
 ENABLE_CORS = getenv('ENABLE_CORS', 'false')
 HAPROXY_VHOST = getenv('HAPROXY_VHOST', 'geoserver.marathon.mesos')
-HAPROXY_PORT = getenv('HAPROXY_PORT', '8080')
 HOST_GEOSERVER_DATA_DIR = getenv('HOST_GEOSERVER_DATA_DIR', '/shared/geoserver')
 HOST_SUPPLEMENTAL_DATA_DIRS = getenv('HOST_SUPPLEMENTAL_DATA_DIRS', None)
 
@@ -84,7 +83,6 @@ with open('configs/geoserver.json') as marathon_config:
             marathon_app.container.volumes.append(MarathonContainerVolume(sup_dir, sup_dir, 'RO'))
     marathon_app.container.docker.image = GEOSERVER_IMAGE
     marathon_app.labels['HAPROXY_0_VHOST'] = HAPROXY_VHOST
-    marathon_app.labels['HAPROXY_0_PORT'] = HAPROXY_PORT
     marathon_app.labels['DCOS_PACKAGE_FRAMEWORK_NAME'] = FRAMEWORK_NAME
     if AUTH_URI:
         marathon_app.fetch = [{ 'uri': AUTH_URI }]
