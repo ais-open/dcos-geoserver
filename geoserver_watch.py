@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import json
 import logging
 import signal
 import sys
@@ -8,7 +9,9 @@ from os import getenv
 from watchdog.observers.polling import PollingObserver
 from geoserver_fs_handler import GeoServerFileSystemEventHandler
 
-logging.basicConfig(level=logging.INFO,
+GS_SYNC_DEBUG = json.loads(getenv('GS_SYNC_DEBUG', 'false').lower())
+
+logging.basicConfig(level=(logging.DEBUG if GS_SYNC_DEBUG else logging.INFO),
                     format='%(asctime)s - %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S',
                     stream=sys.stdout)
