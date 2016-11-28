@@ -50,7 +50,6 @@
 	},
 	"labels": {
 		"HAPROXY_GROUP": "internal,external",
-		"HAPROXY_0_PORT": "8080",
 		"HAPROXY_0_STICKY": "true",
 		"HAPROXY_0_VHOST": "geoserver.marathon.mesos"
 	}

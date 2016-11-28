@@ -13,7 +13,7 @@ logging.basicConfig(level=logging.INFO,
                     datefmt='%Y-%m-%d %H:%M:%S',
                     stream=sys.stdout)
 
-GEOSERVER_DATA_DIR = getenv('GEOSERVER_DATA_DIR', '/srv/geoserver')
+GEOSERVER_DATA_DIR = getenv('GEOSERVER_DATA_DIR', '/etc/geoserver')
 POLLING_INTERVAL = int(getenv('POLLING_INTERVAL', '5'))
 FILE_BLACKLIST = getenv('FILE_BLACKLIST', '.log')
 

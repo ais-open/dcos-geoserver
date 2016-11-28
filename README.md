@@ -43,6 +43,5 @@ or to tune the synchronization of the instances on configuration update.
 * GEOSERVER_IMAGE: Docker image used for the GeoServer instance (defaults to appliedis/geoserver:2.10.0)
 * HAPROXY_VHOST: Public address for access to the GeoServer cluster (defaults to geoserver.marathon.mesos). 
 Multiple values are allowed in comma delimited form (http://public1,http://public2). 
-* HAPROXY_PORT: Port bound on marathon-lb for the services (defaults to 8080)
 * HOST_GEOSERVER_DATA_DIR: location the GeoServer data directory resides on the host (defaults to /shared/geoserver)
 * HOST_SUPPLEMENTAL_DATA_DIRS: comma separated locations of data stored on host to mount RO into container (no default)
