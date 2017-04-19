@@ -31,6 +31,8 @@ GEOSERVER_INSTANCES = int(getenv('GEOSERVER_INSTANCES', 3))
 GEOSERVER_MEMORY = int(getenv('GEOSERVER_MEMORY', 512))
 GEOSERVER_CPUS = int(getenv('GEOSERVER_CPUS', 2))
 GEOSERVER_IMAGE = getenv('GEOSERVER_IMAGE', 'appliedis/geoserver:2.11.0')
+GEOSERVER_EXTENSION_TARBALL_URI = getenv('GEOSERVER_EXTENSION_TARBALL_URI', None)
+GEOSERVER_WEB_XML_URI = getenv('GEOSERVER_WEB_XML_URI', None)
 ENABLE_CORS = getenv('ENABLE_CORS', 'false')
 HAPROXY_VHOST = getenv('HAPROXY_VHOST', 'geoserver.marathon.mesos')
 HOST_GEOSERVER_DATA_DIR = getenv('HOST_GEOSERVER_DATA_DIR', '/shared/geoserver')
@@ -91,6 +93,11 @@ with open('configs/geoserver.json') as marathon_config:
     marathon_app.cpus = GEOSERVER_CPUS
     marathon_app.mem = GEOSERVER_MEMORY
     marathon_app.instances = 1
+    
+    if GEOSERVER_EXTENSION_TARBALL_URI and len(GEOSERVER_EXTENSION_TARBALL_URI):
+        marathon_app.env['GEOSERVER_EXTENSION_TARBALL_URI'] = GEOSERVER_EXTENSION_TARBALL_URI
+    if GEOSERVER_WEB_XML_URI and len(GEOSERVER_WEB_XML_URI):
+        marathon_app.env['GEOSERVER_WEB_XML_URI'] = GEOSERVER_WEB_XML_URI
     marathon_app.env['ENABLE_CORS'] = ENABLE_CORS
     marathon_app.env['GOSU_USER'] = GOSU_USER
 
