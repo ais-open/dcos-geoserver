@@ -39,7 +39,7 @@ or to tune the synchronization of the instances on configuration update.
 * GEOSERVER_INSTANCES: Number of server instances in cluster (default: `3`)
 * GEOSERVER_CPUS: CPU cores alloted to each GeoServer instance (default: `2`)
 * GEOSERVER_MEMORY: Memory alloted to each GeoServer instance (default: `512MiB`)
-* GEOSERVER_IMAGE: Docker image used for the GeoServer instance (default: `appliedis/geoserver:2.10.0`)
+* GEOSERVER_IMAGE: Docker image used for the GeoServer instance (default: `appliedis/geoserver:2.11.0`)
 * HAPROXY_VHOST: Public address for access to the GeoServer cluster (default: `geoserver.marathon.mesos`). 
 Multiple values are allowed in comma delimited form (default: `http://public1,http://public2`). 
 * HOST_GEOSERVER_DATA_DIR: location the GeoServer data directory resides on the host (default: `/shared/geoserver`)
