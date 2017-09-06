@@ -33,7 +33,7 @@ def sync_marathon_app():
 
         app = c.get_app(MARATHON_APP)
 
-        port_index = find_port_index_by_container_port(MARATHON_APP_PORT)
+        port_index = find_port_index_by_container_port(app, MARATHON_APP_PORT)
 
         if port_index is None:
             raise Exception('Unable to correlate container to host port.')
