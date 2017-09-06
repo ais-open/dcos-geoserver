@@ -33,16 +33,7 @@ def sync_marathon_app():
 
         app = c.get_app(MARATHON_APP)
 
-        container_port = MARATHON_APP_PORT
-
-        port_index = None
-        if app and app.container and app.container.docker and app.container.docker.port_mappings:
-            for i in range(len(app.container.docker.port_mappings)):
-                if container_port == app.container.docker.port_mappings[i].container_port:
-                    # Set port index to use for identifying the exposed port
-                    # that maps to internal container port
-                    port_index = i
-                    break
+        port_index = find_port_index_by_container_port(MARATHON_APP_PORT)
 
         if port_index is None:
             raise Exception('Unable to correlate container to host port.')
@@ -57,3 +48,31 @@ def sync_marathon_app():
 
     except MarathonError, ex:
         print 'Error making Marathon API call: %s' % ex.message
+
+
+def find_port_index_by_container_port(app, container_port):
+    """Lookup the port index by known GeoServer container port  
+    
+    :param app: MarathonApp object to extract port index information from
+    :param container_port: Known port for GeoServer internal to container
+    :return: port index matching given container_port or `None` if not found
+    """
+
+    if app and app.container:
+        port_mappings = None
+
+        # Marathon >= 1.5.0
+        if app.container.port_mappings:
+            port_mappings = app.container.port_mappings
+        # Marathon < 1.5.0
+        elif app.container.docker and app.container.docker.port_mappings:
+            port_mappings = app.container.docker.port_mappings
+
+        if port_mappings:
+            for i in range(len(port_mappings)):
+                if container_port == port_mappings[i].container_port:
+                    # Set port index to use for identifying the exposed port
+                    # that maps to internal container port
+                    return i
+
+    return None
