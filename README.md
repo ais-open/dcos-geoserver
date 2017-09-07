@@ -14,6 +14,8 @@ If marathon-lb is not already installed, it should also be installed from the Un
 Within a minute the _geoserver_ and _geoserver-app_ applications should be active and healthy. Once it is healthy
 simply browse to the URL specified in the haproxy-vhost label of the _geoserver-app_ application in Marathon. This
 defaults to geoserver.marathon.mesos unless overridden with the advanced install settings.
+
+Reference DCOS Example documentation for complete quickstart: https://github.com/dcos/examples/tree/master/geoserver
   
 ## Environment Variables
 
