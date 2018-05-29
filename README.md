@@ -25,7 +25,6 @@ or to configure the synchronization of the instances on configuration update.
 ### Synchronization
 * FILE_BLACKLIST: comma delimited list of files to ignore during file system polling (default: `.log`)
 * GEOSERVER_DATA_DIR: file system location to watch for updates (default: `/shared/geoserver`)
-* GOSU_USER: User ID and group ID (user:group) ownership of GeoServer configuration storage. (default: `root:root`)
 * GS_RELOAD_INTERVAL: time in seconds between reload of each instance
 * GS_PROTOCOL: protocol prefix, should be set to 'http' or 'https'
 * GS_RELATIVE_URL: relative URL to GeoServer REST API
@@ -41,7 +40,7 @@ or to configure the synchronization of the instances on configuration update.
 * GEOSERVER_INSTANCES: Number of server instances in cluster (default: `3`)
 * GEOSERVER_CPUS: CPU cores alloted to each GeoServer instance (default: `2`)
 * GEOSERVER_MEMORY: Memory alloted to each GeoServer instance (default: `512MiB`)
-* GEOSERVER_IMAGE: Docker image used for the GeoServer instance (default: `appliedis/geoserver:2.11.0`)
+* GEOSERVER_IMAGE: Docker image used for the GeoServer instance (default: `appliedis/geoserver:2.13.1`)
 * GEOSERVER_EXTENSION_TARBALL_URI: URI of tarballed JARs to inject into GeoServer instances (default: `None`)
 * GEOSERVER_WEB_XML_URI: URI of web.xml to inject into GeoServer instances (default: `None`)
 * HAPROXY_VHOST: Public address for access to the GeoServer cluster (default: `geoserver.marathon.mesos`). 

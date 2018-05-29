@@ -6,7 +6,7 @@ LABEL name="DCOS GeoServer Bootstrap Image" \
     license="Apache v2.0"
 
 COPY requirements.txt /
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 RUN mkdir -p /opt/gs-sync
 
