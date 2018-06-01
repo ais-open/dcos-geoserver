@@ -62,7 +62,7 @@ def find_port_index_by_container_port(app, container_port):
         port_mappings = None
 
         # Marathon >= 1.5.0
-        if app.container.port_mappings:
+        if getattr(app.container, 'port_mappings', None):
             port_mappings = app.container.port_mappings
         # Marathon < 1.5.0
         elif app.container.docker and app.container.docker.port_mappings:
