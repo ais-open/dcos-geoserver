@@ -23,7 +23,7 @@ MARATHON_ROOT_URLS = ['http://marathon.mesos:8080','https://marathon.mesos:8443'
 
 AUTH_URI = getenv('AUTH_URI', None)
 DCOS_OAUTH_TOKEN = getenv('DCOS_OAUTH_TOKEN', '').strip()
-FRAMEWORK_NAME = getenv('DCOS_PACKAGE_FRAMEWORK_NAME', 'geoserver')
+FRAMEWORK_NAME = getenv('MARATHON_APP_LABEL_DCOS_PACKAGE_FRAMEWORK_NAME', 'geoserver')
 GOSU_USER = getenv('GOSU_USER', 'root:root')
 GEOSERVER_DATA_DIR = getenv('GEOSERVER_DATA_DIR', '/etc/geoserver')
 GEOSERVER_APP = '%s-app' % FRAMEWORK_NAME
