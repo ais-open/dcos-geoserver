@@ -25,6 +25,7 @@ or to configure the synchronization of the instances on configuration update.
 ### Synchronization
 * FILE_BLACKLIST: comma delimited list of files to ignore during file system polling (default: `.log`)
 * GEOSERVER_DATA_DIR: file system location to watch for updates (default: `/shared/geoserver`)
+* GOSU_USER: User ID and group ID (user:group) ownership of GeoServer configuration storage. (default: `root:root`)
 * GS_RELOAD_INTERVAL: time in seconds between reload of each instance
 * GS_PROTOCOL: protocol prefix, should be set to 'http' or 'https'
 * GS_RELATIVE_URL: relative URL to GeoServer REST API
