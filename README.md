@@ -35,8 +35,6 @@ or to configure the synchronization of the instances on configuration update.
 
 ### Bootstrap
 * AUTH_URI: URI to a .dockercfg file used to pull from private registry (no default)
-* DCOS_OAUTH_TOKEN: Auth token for deployment of GeoServer instances in DCOS EE (no default)
-* DCOS_PACKAGE_FRAMEWORK_NAME: Value passed through from DCOS package (default: `geoserver`)
 * ENABLE_CORS: Boolean indicating whether GeoServer image should add response headers for CORS (default: `false`)
 * GEOSERVER_INSTANCES: Number of server instances in cluster (default: `3`)
 * GEOSERVER_CPUS: CPU cores alloted to each GeoServer instance (default: `2`)
@@ -48,3 +46,26 @@ or to configure the synchronization of the instances on configuration update.
 Multiple values are allowed in comma delimited form (default: `http://public1,http://public2`). 
 * HOST_GEOSERVER_DATA_DIR: location the GeoServer data directory resides on the host (default: `/shared/geoserver`)
 * HOST_SUPPLEMENTAL_DATA_DIRS: comma separated locations of data stored on host to mount RO into container (no default)
+* SERVICE_SECRET: Service secret for deployment of GeoServer instances in DCOS EE Strict (no default)
+
+# DCOS EE Strict
+
+Additions have been made to support login with ACS to allow access through to the Marathon API
+in a Strict security posture. Creation of the service secret can be done as follows using the DCOS CLI:
+
+```
+dcos security org service-accounts keypair service-account-private.pem service-account-public.pem
+dcos security org service-accounts create -p service-account-public.pem -d "Service account for GeoServer framework" service-account
+dcos security secrets create-sa-secret --strict service-account-private.pem service-account service-account-secret
+
+# Test with SUPERUSER perms on user
+dcos security org users grant service-account dcos:superuser full
+
+# Deploy GeoServer package and enter service-account as the name of the secret containing credentials
+
+# Once success has been confirmed, more granular permissions should be applied
+dcos security org users revoke service-account dcos:superuser full
+dcos security org users grant service-account dcos:service:marathon:marathon:services:/geoserver full
+dcos security org users grant service-account dcos:service:marathon:marathon:admin:leader full
+dcos security org users grant service-account dcos:service:marathon:marathon:admin:events full
+dcos security org users grant service-account dcos:service:marathon:marathon:admin:config read
