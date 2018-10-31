@@ -8,6 +8,7 @@ import time
 
 from os import getenv
 from os.path import exists
+from acs import DCOSServiceAuth
 from marathon import MarathonClient, NotFoundError
 from marathon.models import MarathonApp
 from marathon.models.container import MarathonContainerVolume
@@ -22,7 +23,7 @@ logging.basicConfig(level=(logging.DEBUG if GS_SYNC_DEBUG else logging.INFO),
 MARATHON_ROOT_URLS = ['http://marathon.mesos:8080','https://marathon.mesos:8443']
 
 AUTH_URI = getenv('AUTH_URI', None)
-DCOS_OAUTH_TOKEN = getenv('DCOS_OAUTH_TOKEN', '').strip()
+SERVICE_SECRET = getenv('SERVICE_SECRET')
 FRAMEWORK_NAME = getenv('MARATHON_APP_LABEL_DCOS_PACKAGE_FRAMEWORK_NAME', 'geoserver')
 GOSU_USER = getenv('GOSU_USER', 'root:root')
 GEOSERVER_DATA_DIR = getenv('GEOSERVER_DATA_DIR', '/etc/geoserver')
@@ -38,11 +39,12 @@ HAPROXY_VHOST = getenv('HAPROXY_VHOST', 'geoserver.marathon.mesos')
 HOST_GEOSERVER_DATA_DIR = getenv('HOST_GEOSERVER_DATA_DIR', '/shared/geoserver')
 HOST_SUPPLEMENTAL_DATA_DIRS = getenv('HOST_SUPPLEMENTAL_DATA_DIRS', None)
 
-MARATHON_CLIENT = None
-if len(DCOS_OAUTH_TOKEN):
-    MARATHON_CLIENT = MarathonClient(MARATHON_ROOT_URLS, auth_token=DCOS_OAUTH_TOKEN)
-else:
-    MARATHON_CLIENT = MarathonClient(MARATHON_ROOT_URLS)
+AUTH_TOKEN=None
+if SERVICE_SECRET:
+    auth = DCOSServiceAuth(json.loads(SERVICE_SECRET))
+    AUTH_TOKEN=auth.token
+
+MARATHON_CLIENT = MarathonClient(MARATHON_ROOT_URLS, auth_token=AUTH_TOKEN)
 
 
 def create_app_validate(client, marathon_app):
