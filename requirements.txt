@@ -3,7 +3,7 @@ certifi==2018.10.15
 chardet==3.0.4
 gisdata==0.5.4
 gsconfig==1.0.10
-httplib2==0.11.3
+httplib2==0.18.0
 idna==2.7
 marathon==0.10.0
 pathtools==0.1.2
