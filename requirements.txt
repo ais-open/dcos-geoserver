@@ -1,5 +1,5 @@
 argh==0.26.2
-certifi==2018.10.15
+certifi==2022.12.7
 chardet==3.0.4
 gisdata==0.5.4
 gsconfig==1.0.10
@@ -9,7 +9,9 @@ marathon==0.10.0
 pathtools==0.1.2
 PyJWT==1.6.4
 PyYAML==5.4
+PyJWT==2.4.0
+PyYAML==3.13
 requests==2.20.0
 requests-toolbelt==0.8.0
-urllib3==1.24
+urllib3==1.26.18
 watchdog==0.8.3
