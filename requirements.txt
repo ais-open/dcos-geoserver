@@ -7,6 +7,8 @@ httplib2==0.11.3
 idna==2.7
 marathon==0.10.0
 pathtools==0.1.2
+PyJWT==1.6.4
+PyYAML==5.4
 PyJWT==2.4.0
 PyYAML==3.13
 requests==2.31.0
